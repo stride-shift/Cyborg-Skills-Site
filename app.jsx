@@ -1126,27 +1126,24 @@ const HomePage = () => (
           <div>
             <span className="badge green" style={{ marginBottom: 'var(--space-md)', display: 'inline-block' }}>CYBORG SKILLS</span>
             <h1 className="page-title">
-              Learn to Think With AI,<br />
-              Not Just Use It.
+              Feeling Left Behind<br />
+              by AI?
             </h1>
             <p className="page-subtitle" style={{ marginBottom: 'var(--space-xl)' }}>
-              Whether you're a student writing essays, a parent helping with homework, a professional boosting productivity, 
-              or anyone curious about AI—we'll help you build the habits that make AI feel like a natural extension of your mind.
-            </p>
-            <p className="page-subtitle" style={{ marginBottom: 'var(--space-2xl)', fontSize: '1rem', color: 'var(--text-muted)' }}>
-              No tech background needed. Just 15 days to transform how you work, create, and think.
+              Others seem to be doing magic with AI while you're still wondering what you're missing. 
+              The gap isn't talent—it's knowing what's possible.
             </p>
             <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', animation: 'fadeInUp 1s ease 0.4s backwards' }}>
-              <Link to="/habits" className="btn primary">
-                Start Your Journey <ArrowRight size={18} className="arrow-icon" />
-              </Link>
-              <a href="#who-is-this-for" className="btn outline">
-                Is This For Me? <ChevronRight size={18} />
+              <a href="#the-gap" className="btn primary">
+                Show Me What I'm Missing <ArrowRight size={18} className="arrow-icon" />
+              </a>
+              <a href="#sound-familiar" className="btn outline">
+                Sound Familiar? <ChevronRight size={18} />
               </a>
             </div>
           </div>
           <div style={{ animation: 'fadeInRight 1s ease 0.3s backwards' }}>
-            <VideoPlaceholder label="Introduction Video" aspectRatio="4/3" />
+            <VideoPlaceholder label="See What's Possible" aspectRatio="4/3" />
           </div>
         </div>
       </div>
@@ -1158,59 +1155,61 @@ const HomePage = () => (
       `}</style>
     </section>
 
-    {/* WHO IS THIS FOR */}
-    <section id="who-is-this-for" className="section-alt" style={{ padding: 'var(--space-4xl) 0' }}>
+    {/* SOUND FAMILIAR - Pain Points */}
+    <section id="sound-familiar" className="section-alt" style={{ padding: 'var(--space-4xl) 0' }}>
       <div className="container">
-        <h2 className="section-heading">Who Is Cyborg Skills For?</h2>
-        <p style={{ maxWidth: '600px', color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: 'var(--space-2xl)', fontSize: '1.05rem' }}>
-          AI isn't just for tech people anymore. It's for <strong>everyone</strong> who wants to do more with less effort.
-        </p>
-        <div className="grid-layout">
+        <h2 className="section-heading">Sound Familiar?</h2>
+        <div className="grid-layout" style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '900px' }}>
           {[
-            { title: 'Students', desc: 'Research faster, write better essays, understand complex topics instantly. Get an A without the all-nighters.', icon: BookOpen, color: 'green' },
-            { title: 'Working Professionals', desc: 'Automate the boring stuff. Write emails in seconds. Prepare presentations in minutes. Focus on what matters.', icon: Target, color: 'blue' },
-            { title: 'Parents & Families', desc: 'Help kids with homework, plan activities, manage household chaos. AI makes family life smoother.', icon: Heart, color: 'green' },
-            { title: 'Creatives & Artists', desc: 'Brainstorm ideas, overcome creative blocks, explore new styles. AI is your unlimited creative partner.', icon: Sparkles, color: 'blue' },
-            { title: 'Small Business Owners', desc: 'Marketing, customer service, planning—do it all without hiring a team. Compete with the big players.', icon: Rocket, color: 'green' },
-            { title: 'Curious Minds', desc: 'Just want to understand this AI thing everyone\'s talking about? Start here. No jargon, just practical skills.', icon: Lightbulb, color: 'blue' },
+            { text: "You've tried the AI tools but the results were... underwhelming.", icon: CircleDot, color: 'green' },
+            { text: "Colleagues mention AI tools you've never heard of.", icon: CircleDot, color: 'blue' },
+            { text: "You wonder if your role will still exist in 5 years.", icon: CircleDot, color: 'green' },
+            { text: "Every AI course feels either too basic or too technical.", icon: CircleDot, color: 'blue' },
+            { text: "You see others doing incredible things, but can't replicate it.", icon: CircleDot, color: 'green' },
+            { text: "You're not sure where to even start anymore.", icon: CircleDot, color: 'blue' },
           ].map((item, idx) => (
-            <Card key={idx} index={idx} title={item.title} description={item.desc} icon={item.icon} colorScheme={item.color} />
+            <AnimatedCard key={idx} className={`card-${item.color}`} delay={idx * 0.08} style={{ padding: 'var(--space-lg)', display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+              <item.icon size={20} color={item.color === 'green' ? 'var(--green-accent)' : 'var(--blue-accent)'} />
+              <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{item.text}</span>
+            </AnimatedCard>
           ))}
         </div>
+        <div style={{ textAlign: 'center', marginTop: 'var(--space-2xl)' }}>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-dark)', fontWeight: 500, marginBottom: 'var(--space-md)' }}>
+            You're not behind because you're slow. You're behind because no one showed you <em>what's actually possible</em>.
+          </p>
+        </div>
+        <style>{`
+          @media (max-width: 768px) {
+            .grid-layout[style*="repeat(2, 1fr)"] { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
       </div>
     </section>
 
-    {/* THE PROBLEM */}
-    <section style={{ padding: 'var(--space-4xl) 0' }}>
+    {/* THE GAP - Awareness Asymmetry */}
+    <section id="the-gap" style={{ padding: 'var(--space-4xl) 0' }}>
       <div className="container">
-        <h2 className="section-heading">The Real Problem With AI Today</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-2xl)', alignItems: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
-            <ImagePlaceholder height={350} label="Before & After Illustration" style={{ marginBottom: 'var(--space-xl)' }} />
+            <h2 className="section-heading">The Awareness Gap</h2>
             <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: '1.9', marginBottom: 'var(--space-lg)' }}>
-              You've probably tried ChatGPT. Maybe you asked it a few questions, got some okay answers, and thought: 
-              <em style={{ color: 'var(--text-dark)', fontWeight: 500 }}> "Is this it?"</em>
+              Two professionals. Same job. Same tools available. One is 10x more productive with AI. The other is still copying and pasting basic questions.
+            </p>
+            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: '1.9', marginBottom: 'var(--space-lg)' }}>
+              <strong style={{ color: 'var(--text-dark)' }}>The difference isn't intelligence.</strong> It's not work ethic. It's simply knowing what's possible—and having the right approach.
             </p>
             <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: '1.9' }}>
-              Here's the secret: <strong style={{ color: 'var(--green-accent)' }}>AI is like a musical instrument.</strong> Anyone can press a key, 
-              but making beautiful music takes practice and technique.
+              Most people can't Google what they don't know exists. If you don't know AI can turn a meeting into a project plan, analyze 100 customer reviews in seconds, or generate a custom interface for your data—you'll never think to ask.
             </p>
           </div>
           <div>
-            <VideoPlaceholder label="Watch: The AI Mindset Shift" aspectRatio="16/9" style={{ marginBottom: 'var(--space-lg)' }} />
-            <div className="grid-layout" style={{ gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
-              {[
-                { text: "Staring at blank chat windows", icon: Eye },
-                { text: "Getting generic, unhelpful answers", icon: CircleDot },
-                { text: "Feeling like you're missing something", icon: CircleDot },
-                { text: "Watching others do magic with AI", icon: Sparkles },
-              ].map((item, idx) => (
-                <AnimatedCard key={idx} className={idx % 2 === 0 ? 'card-green' : 'card-blue'} delay={idx * 0.1} style={{ padding: 'var(--space-lg)', display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
-                  <item.icon size={20} color={idx % 2 === 0 ? 'var(--green-accent)' : 'var(--blue-accent)'} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{item.text}</span>
-                </AnimatedCard>
-              ))}
-            </div>
+            <VideoPlaceholder label="Watch: The Awareness Gap Explained" aspectRatio="16/9" style={{ marginBottom: 'var(--space-lg)' }} />
+            <AnimatedCard className="card-green" style={{ padding: 'var(--space-lg)' }}>
+              <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic' }}>
+                "That is a capability that has never existed in the history of humanity. And most people don't even know to ask for it."
+              </p>
+            </AnimatedCard>
           </div>
         </div>
         <style>{`
@@ -1431,7 +1430,7 @@ const HabitsPage = () => (
     <section style={{ padding: 'var(--space-4xl) 0' }}>
       <div className="container">
         <div className="quote-block" style={{ maxWidth: '700px', margin: '0 auto var(--space-2xl)' }}>
-          "Through the program I learned how to use a lot of AI and I learned how to do a lot of stuff on my own with the help of AI. As someone with no background in coding at all, I learned how to design a website using AI and GPT and Gemini."
+          "Through the program I learned how to do a lot of stuff on my own with the help of AI. As someone with no background in coding at all, I learned how to design a website using AI tools."
           <div className="quote-author">— Masud Mohammed, Program Graduate</div>
         </div>
 
