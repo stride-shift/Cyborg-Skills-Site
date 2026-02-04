@@ -1124,6 +1124,7 @@ const HomePage = () => (
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
+            <span className="badge green" style={{ marginBottom: 'var(--space-md)', display: 'inline-block' }}>CYBORG SKILLS</span>
             <h1 className="page-title">
               Learn to Think With AI,<br />
               Not Just Use It.
@@ -1281,8 +1282,8 @@ const HomePage = () => (
             <ImagePlaceholder height={120} label="" style={{ borderRadius: '0', border: 'none', height: '100%' }} />
           </div>
           <div className="quote-block" style={{ margin: 0, flex: 1 }}>
-            "I'm a 58-year-old teacher who thought AI wasn't for me. After Cyborg Habits, I use it daily for lesson planning, grading, and even creative projects. It's like gaining a superpower."
-            <div className="quote-author">— Margaret T., High School Teacher</div>
+            "Devil's Advocate is the best thing I ever learned about AI. In every cohort closeout ceremony, students consistently say it was the thing that blew their mind the most."
+            <div className="quote-author">— Scott, Cyborg Habits Graduate</div>
           </div>
         </div>
         <style>{`
@@ -1362,6 +1363,7 @@ const HabitsPage = () => (
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
+            <span className="badge green" style={{ marginBottom: 'var(--space-md)', display: 'inline-block' }}>15-DAY TRANSFORMATION</span>
             <h1 className="page-title">Cyborg Habits.</h1>
             <p className="page-subtitle" style={{ marginTop: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
               15 days. 7 habits. One transformation. Whether you're 18 or 80, tech-savvy or tech-shy—this program meets you where you are.
@@ -1429,8 +1431,8 @@ const HabitsPage = () => (
     <section style={{ padding: 'var(--space-4xl) 0' }}>
       <div className="container">
         <div className="quote-block" style={{ maxWidth: '700px', margin: '0 auto var(--space-2xl)' }}>
-          "I'm a stay-at-home mom. I thought AI was for programmers. Now I use it to plan meals, help my kids with homework, and even started a small Etsy shop with AI-generated designs!"
-          <div className="quote-author">— Sarah K., Parent & Entrepreneur</div>
+          "Through the program I learned how to use a lot of AI and I learned how to do a lot of stuff on my own with the help of AI. As someone with no background in coding at all, I learned how to design a website using AI and GPT and Gemini."
+          <div className="quote-author">— Masud Mohammed, Program Graduate</div>
         </div>
 
         <AnimatedCard className="card-green" style={{ padding: 'var(--space-2xl)', textAlign: 'center', maxWidth: '500px', margin: '0 auto' }}>
@@ -1451,26 +1453,38 @@ const HabitsPage = () => (
 
 const MarketplacePage = () => (
   <div>
-    <section style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', paddingTop: '100px' }}>
+    <section style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', paddingTop: '100px' }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 'var(--space-3xl)', alignItems: 'center' }}>
-          <div>
-            <h1 className="page-title">Tools & Resources.</h1>
-            <p className="page-subtitle" style={{ marginTop: 'var(--space-lg)' }}>
-              Physical cards, digital tools, and fun games to practice your AI skills. Learn by doing.
-            </p>
-          </div>
-          <div className="image-grid cols-2">
-            <ImagePlaceholder aspectRatio="1/1" label="Card Deck" />
-            <ImagePlaceholder aspectRatio="1/1" label="Book" />
-            <ImagePlaceholder aspectRatio="1/1" label="Digital Tools" />
-            <ImagePlaceholder aspectRatio="1/1" label="Games" />
-          </div>
+        <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto', marginBottom: 'var(--space-3xl)' }}>
+          <span className="badge blue" style={{ marginBottom: 'var(--space-md)', display: 'inline-block' }}>THE MARKETPLACE</span>
+          <h1 className="page-title" style={{ marginBottom: 'var(--space-lg)' }}>Tools & Resources.</h1>
+          <p className="page-subtitle" style={{ margin: '0 auto' }}>
+            Physical cards, digital tools, video courses, and fun games to practice your AI skills. Learn by doing.
+          </p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-lg)' }}>
+          {[
+            { label: "Card Deck", icon: Layers, desc: "Physical prompts", color: "green" },
+            { label: "Book", icon: BookOpen, desc: "84-page guide", color: "blue" },
+            { label: "Video Skills", icon: Play, desc: "52 weekly lessons", color: "green" },
+            { label: "Games", icon: Gamepad2, desc: "Practice & compete", color: "blue" }
+          ].map((item, idx) => (
+            <AnimatedCard key={idx} delay={idx * 0.1} style={{ padding: 'var(--space-xl)', textAlign: 'center' }}>
+              <div className={`icon-box ${item.color}`} style={{ margin: '0 auto var(--space-md)', width: '70px', height: '70px' }}>
+                <item.icon size={32} color="white" />
+              </div>
+              <h3 style={{ fontSize: '1.1rem', fontFamily: 'Playfair Display, serif', fontWeight: 600, marginBottom: '4px' }}>{item.label}</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{item.desc}</p>
+            </AnimatedCard>
+          ))}
         </div>
       </div>
       <style>{`
         @media (max-width: 900px) {
-          section > .container > div[style*="grid-template-columns: 1.2fr 1fr"] { grid-template-columns: 1fr !important; }
+          section > .container > div[style*="grid-template-columns: repeat(4, 1fr)"] { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 480px) {
+          section > .container > div[style*="grid-template-columns: repeat(4, 1fr)"] { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </section>
@@ -1501,13 +1515,44 @@ const MarketplacePage = () => (
           }
         `}</style>
 
+        {/* 52 Skills Video Series */}
+        <AnimatedCard className="card-green" style={{ padding: 'var(--space-2xl)', marginBottom: 'var(--space-3xl)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 'var(--space-2xl)', alignItems: 'center' }}>
+            <VideoPlaceholder height={280} label="Skills Series Preview" aspectRatio="16/9" />
+            <div>
+              <span className="badge green">52 WEEKLY SKILLS</span>
+              <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', margin: 'var(--space-md) 0', fontFamily: 'Playfair Display, serif', fontWeight: 600 }}>The Cyborg Skills Catalog</h2>
+              <p style={{ color: 'var(--text-secondary)', lineHeight: '1.75', marginBottom: 'var(--space-md)' }}>
+                52 video lessons. One new skill every week. From Meeting to Summary to Vibe Engineering—master the complete toolkit of human-AI collaboration.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--space-sm)', marginBottom: 'var(--space-lg)' }}>
+                {['Content Transformation', 'UI Generation', 'Research & Analysis', 'Communication', 'Planning & Strategy', 'Creative & Design'].map((cat, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    <CheckCircle size={16} color="var(--green-accent)" />
+                    <span>{cat}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', alignItems: 'center' }}>
+                <button className="btn primary"><Play size={16} /> Watch Sample</button>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>$15/month or $149/year</span>
+              </div>
+            </div>
+          </div>
+        </AnimatedCard>
+        <style>{`
+          @media (max-width: 768px) {
+            .card-green > div[style*="grid-template-columns: 1fr 1.2fr"] { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+
         <h2 className="section-heading">Shop</h2>
         <div className="grid-layout">
           {[
             { title: "The 7 Habits Card Deck", category: "PHYSICAL", description: "52 beautifully designed cards with prompts for each habit. Keep on your desk, shuffle when stuck.", price: "$29", color: "green", btn: "Pre-Order", label: "Card Deck Photo" },
             { title: "The Extended Mind Book", category: "BOOK", description: "84 pages of insights, stories, and exercises. Coffee-table worthy. Filled with illustrations.", price: "$45", color: "blue", btn: "Order Now", label: "Book Cover" },
             { title: "Prompt Starter Pack", category: "DIGITAL", description: "100+ ready-to-use prompts for everyday situations: emails, planning, learning, creativity.", price: "$19", color: "green", btn: "Download", label: "Digital Preview" },
-            { title: "Skills Catalog Subscription", category: "ONGOING", description: "New AI skills delivered weekly. Short videos, templates, and exercises. Stay current.", price: "$15/mo", color: "blue", btn: "Subscribe", label: "Video Preview" }
+            { title: "First 12 Skills Bundle", category: "VIDEO", description: "The MVP launch skills: Meeting to Summary, Deep Dive Research, Vibe Engineering, and 9 more.", price: "$79", color: "blue", btn: "Get Access", label: "Video Bundle" }
           ].map((product, idx) => (
             <AnimatedCard key={idx} className={`card-${product.color}`} delay={idx * 0.1} style={{ padding: 0, overflow: 'hidden' }}>
               <ImagePlaceholder height={180} label={product.label} style={{ borderRadius: '24px 24px 0 0', border: 'none' }} />
@@ -1546,9 +1591,10 @@ const ThinkTankPage = () => (
   <div>
     <section style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', paddingTop: '100px' }}>
       <div className="container">
-        <h1 className="page-title">The Think Tank.</h1>
+        <span className="badge green" style={{ marginBottom: 'var(--space-md)', display: 'inline-block' }}>THE THINK TANK</span>
+        <h1 className="page-title">Blogs & Thought Leadership.</h1>
         <p className="page-subtitle" style={{ marginTop: 'var(--space-lg)' }}>
-          Weekly essays exploring the big questions about AI and humanity. Thoughtful, accessible, and always practical.
+          Weekly insights exploring the big questions about AI and humanity. Thoughtful, accessible, and always practical.
         </p>
       </div>
     </section>
@@ -1561,14 +1607,14 @@ const ThinkTankPage = () => (
             <div style={{ padding: 'var(--space-2xl)' }}>
               <span className="badge green">FEATURED</span>
               <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 1.8rem)', margin: 'var(--space-md) 0 var(--space-sm)', fontFamily: 'Playfair Display, serif', fontWeight: 600, lineHeight: 1.3 }}>
-                Why Your Grandma Should Learn AI (And How to Teach Her)
+                The New Competitive Advantage Isn't What You Know
               </h2>
               <div style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-lg)', fontSize: '0.85rem' }}>
-                January 2026 • 8 min read
+                January 2026 • 6 min read
               </div>
               <p style={{ fontSize: '1.05rem', lineHeight: '1.85', color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)' }}>
-                AI isn't just for the young and tech-savvy. In fact, older adults often have the most to gain—from managing health information 
-                to staying connected with family. Here's how to introduce AI to the people you love, without overwhelming them.
+                We don't have knowledge asymmetry anymore. Everyone with a phone can access the same information. 
+                The new edge comes from <strong>awareness asymmetry</strong>—knowing what's possible with AI that others don't even think to ask for.
               </p>
               <button className="btn primary">Read Full Essay <ArrowRight size={18} className="arrow-icon" /></button>
             </div>
@@ -1581,15 +1627,15 @@ const ThinkTankPage = () => (
           }
         `}</style>
 
-        <h2 className="section-heading">Recent Essays</h2>
+        <h2 className="section-heading">Latest Posts</h2>
         <div className="grid-layout">
           {[
-            { title: "AI for Students: The Ethical Guide", category: "EDUCATION", description: "How to use AI for learning without cheating. Finding the balance between assistance and authentic learning.", color: "green", time: "10 min" },
-            { title: "The Parent's AI Handbook", category: "FAMILY", description: "Helping your kids navigate an AI world. What to teach them, what to watch for, how to set boundaries.", color: "blue", time: "12 min" },
-            { title: "From Fear to Fluency", category: "MINDSET", description: "Why so many people are afraid of AI, and the simple mindset shifts that transform fear into excitement.", color: "green", time: "7 min" },
-            { title: "AI Won't Take Your Job (But This Will)", category: "WORK", description: "The real threat isn't AI—it's not learning to work with AI. How to future-proof any career.", color: "blue", time: "9 min" },
-            { title: "Creative AI: Friend or Foe?", category: "CREATIVITY", description: "Artists are divided on AI. Here's a nuanced look at how AI can enhance (not replace) human creativity.", color: "green", time: "11 min" },
-            { title: "The 5-Minute AI Habit", category: "PRODUCTIVITY", description: "Don't have time for a course? Start with this one tiny habit that compounds into major productivity gains.", color: "blue", time: "5 min" }
+            { title: "Why AI Training Fails (And What to Do Instead)", category: "BEHAVIOR CHANGE", description: "Most AI training is a waste of time. Not because the content is bad, but because training solves the wrong problem. The gap isn't knowledge—it's habits.", color: "green", time: "6 min" },
+            { title: "The One AI Habit That Changes Everything", category: "CRITIQUE IT", description: "If I could only teach one AI habit, it would be Devil's Advocate. Every cohort, unanimous: this is the one that blows minds and transforms thinking.", color: "blue", time: "6 min" },
+            { title: "You're Already a Cyborg (You Just Don't Know It)", category: "PHILOSOPHY", description: "When did you last memorize a phone number? Your cognition already extends into your devices. The question isn't whether you're a cyborg—it's whether you're an effective one.", color: "green", time: "6 min" },
+            { title: "When Technology Disappears: The Transparent Equipment Goal", category: "VISION", description: "Watch a skilled musician perform. They're not thinking about their instrument. That's 'transparent equipment'—and it's the goal for AI.", color: "blue", time: "6 min" },
+            { title: "The Discovery Problem", category: "AWARENESS", description: "You can't Google what you don't know to search for. If you don't know AI can turn a meeting into a project plan, you'll never ask for it.", color: "green", time: "5 min" },
+            { title: "From Pressing Keys to Composing Symphonies", category: "MASTERY", description: "AI is like a musical instrument. Anyone can press a key, but making beautiful music takes practice and technique. We teach you the techniques.", color: "blue", time: "5 min" }
           ].map((essay, idx) => (
             <AnimatedCard key={idx} className={`card-${essay.color}`} delay={idx * 0.1} style={{ padding: 0, overflow: 'hidden' }}>
               <ImagePlaceholder height={160} label="Article Image" style={{ borderRadius: '24px 24px 0 0', border: 'none' }} />
@@ -1600,7 +1646,7 @@ const ThinkTankPage = () => (
                 </div>
                 <h3 style={{ fontSize: '1.1rem', color: 'var(--text-dark)', fontFamily: 'Playfair Display, serif', fontWeight: 600, marginBottom: 'var(--space-sm)', lineHeight: 1.3 }}>{essay.title}</h3>
                 <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', fontSize: '0.9rem', marginBottom: 'var(--space-md)' }}>{essay.description}</p>
-                <button className={`btn ${essay.color === 'green' ? 'primary' : 'tech'}`} style={{ width: '100%' }}>Read Essay</button>
+                <button className={`btn ${essay.color === 'green' ? 'primary' : 'tech'}`} style={{ width: '100%' }}>Read Post</button>
               </div>
             </AnimatedCard>
           ))}
@@ -1631,9 +1677,11 @@ const PodcastPage = () => (
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
+            <span className="badge green" style={{ marginBottom: 'var(--space-md)', display: 'inline-block' }}>THE CYBORG PERSPECTIVE</span>
             <h1 className="page-title">The Podcast.</h1>
             <p className="page-subtitle" style={{ marginTop: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
-              Real stories from real people using AI in surprising ways. From teachers to truck drivers, artists to accountants.
+              Conversations about working, thinking, and creating in an AI-enhanced world. 
+              Expert interviews, practical insights, and the future of human-AI collaboration.
             </p>
             <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
               <button className="btn primary"><Play size={16} /> Latest Episode</button>
@@ -1654,18 +1702,20 @@ const PodcastPage = () => (
 
     <section style={{ padding: 'var(--space-3xl) 0' }}>
       <div className="container">
-        <h2 className="section-heading">Latest Episodes</h2>
+        <h2 className="section-heading">Episodes</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
           {[
-            { ep: 12, title: "The Retired Engineer Who Learned to Code at 72", guest: "Robert Chen", description: "Robert never touched code in his career. At 72, he used AI to build an app that helps his community garden coordinate volunteers.", duration: "45 min", color: "green" },
-            { ep: 11, title: "AI in the Art Studio", guest: "Maya Williams", description: "A professional artist's honest take on AI art tools—the good, the bad, and how she integrates them into her practice.", duration: "52 min", color: "blue" },
-            { ep: 10, title: "Small Town, Big AI Dreams", guest: "Pastor James Mitchell", description: "How a rural church uses AI for sermon research, community outreach, and connecting with younger generations.", duration: "38 min", color: "green" },
-            { ep: 9, title: "The Student Who Aced Everything (Ethically)", guest: "Priya Sharma", description: "A college student shares how she uses AI to learn faster and deeper—without crossing any ethical lines.", duration: "41 min", color: "blue" },
+            { ep: 6, title: "Damascus Moments: When AI Changes Everything", guest: "Story Collection", description: "A collection of breakthrough realizations about AI that changed how people work. The executive who couldn't read technical docs. The marketer who discovered Critique It. Real transformation stories.", duration: "35 min", color: "green" },
+            { ep: 5, title: "AI in Learning & Development", guest: "L&D Expert Interview", description: "How AI is changing corporate learning and what L&D leaders should be doing differently. Personalization, behavior change vs learning, and measuring success.", duration: "42 min", color: "blue" },
+            { ep: 4, title: "Why Traditional AI Training Doesn't Work", guest: "Justin & Kiyasha", description: "Making the case for why most AI training fails and what actually works instead. Behavior change science, habit formation, and the evidence from Cyborg Habits.", duration: "38 min", color: "green" },
+            { ep: 3, title: "The Future of Work Isn't What You Think", guest: "Future of Work Expert", description: "Challenging common narratives about AI and work. What's actually changing, skills that matter, and how to stay relevant.", duration: "45 min", color: "blue" },
+            { ep: 2, title: "The 7 Habits of Highly Effective Cyborgs", guest: "Justin & Kiyasha", description: "Deep dive into the 7 habits framework—what they are, why they matter, and how they transform work. Making AI use automatic.", duration: "40 min", color: "green" },
+            { ep: 1, title: "What Does It Mean to Be a Cyborg?", guest: "Justin & Kiyasha", description: "Launch episode establishing the core philosophy. The Extended Mind hypothesis, awareness asymmetry, transparent equipment, and why this all matters now.", duration: "48 min", color: "blue" },
           ].map((episode) => (
             <AnimatedCard key={episode.ep} className={`card-${episode.color}`} style={{ padding: 0, overflow: 'hidden' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 0 }}>
                 <div style={{ position: 'relative' }}>
-                  <ImagePlaceholder height={200} label="Guest Photo" style={{ borderRadius: '24px 0 0 24px', border: 'none', height: '100%' }} />
+                  <ImagePlaceholder height={200} label="Episode Art" style={{ borderRadius: '24px 0 0 24px', border: 'none', height: '100%' }} />
                   <div style={{ position: 'absolute', bottom: 'var(--space-sm)', right: 'var(--space-sm)', background: 'rgba(0,0,0,0.7)', color: 'white', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600 }}>
                     {episode.duration}
                   </div>
@@ -1691,15 +1741,62 @@ const PodcastPage = () => (
             .card-panel > div > div:first-child { border-radius: 24px 24px 0 0 !important; height: 180px !important; }
           }
         `}</style>
+      </div>
+    </section>
 
-        <AnimatedCard className="card-blue" style={{ padding: 'var(--space-2xl)', textAlign: 'center', marginTop: 'var(--space-2xl)' }}>
-          <h3 style={{ fontSize: '1.4rem', marginBottom: 'var(--space-sm)', fontFamily: 'Playfair Display, serif', fontWeight: 600 }}>Subscribe to the Podcast</h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)' }}>New episodes every two weeks.</p>
+    {/* QUICK LISTENS - Skills Audio Clips */}
+    <section className="section-alt" style={{ padding: 'var(--space-4xl) 0' }}>
+      <div className="container">
+        <h2 className="section-heading">Quick Listens: Cyborg Skills</h2>
+        <p style={{ maxWidth: '600px', color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: 'var(--space-xl)' }}>
+          5-minute audio lessons on specific AI skills. Perfect for your commute or coffee break.
+        </p>
+        <div className="grid-layout" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+          {[
+            { num: 1, title: "Meeting to Summary", desc: "Turn any meeting transcript into structured, actionable notes in 60 seconds.", duration: "5 min", color: "green" },
+            { num: 2, title: "Meeting to Execution", desc: "Go beyond summarization—create actual deliverables from meeting content.", duration: "5 min", color: "blue" },
+            { num: 3, title: "Blog to Infographic", desc: "Convert written content into visual infographic format for 10x engagement.", duration: "5 min", color: "green" },
+            { num: 4, title: "UI on Command", desc: "Describe an interface and watch the layout materialize. Cognitive ergonomics in action.", duration: "5 min", color: "blue" },
+            { num: 5, title: "Deep Dive Research", desc: "Become an expert on any topic in an afternoon with structured exploration.", duration: "5 min", color: "green" },
+            { num: 6, title: "Competitive Analysis", desc: "Map competitor landscapes, identify strengths and weaknesses, find gaps.", duration: "5 min", color: "blue" },
+            { num: 7, title: "Tone Matching", desc: "Adapt writing for different audiences—formal to casual, technical to accessible.", duration: "5 min", color: "green" },
+            { num: 8, title: "Project Planning", desc: "Generate detailed project plans with phases, milestones, and dependencies.", duration: "5 min", color: "blue" },
+            { num: 9, title: "Scenario Planning", desc: "Develop multiple future scenarios to stress-test strategies.", duration: "5 min", color: "green" },
+            { num: 10, title: "Vibe Engineering", desc: "End-to-end product design workflow—from concept to working prototype.", duration: "5 min", color: "blue" },
+            { num: 11, title: "Learning Acceleration", desc: "Cut your learning curve in half with structured AI-assisted exploration.", duration: "5 min", color: "green" },
+          ].map((skill, idx) => (
+            <AnimatedCard key={idx} className={`card-${skill.color}`} delay={idx * 0.05} style={{ padding: 'var(--space-lg)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-md)' }}>
+                <div className={`icon-box ${skill.color}`} style={{ minWidth: '50px', height: '50px' }}>
+                  <span style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem' }}>{skill.num}</span>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ fontSize: '1rem', color: 'var(--text-dark)', fontFamily: 'Playfair Display, serif', fontWeight: 600, marginBottom: '4px' }}>{skill.title}</h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: 'var(--space-sm)' }}>{skill.desc}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+                    <button className={`btn ${skill.color === 'green' ? 'primary' : 'tech'}`} style={{ padding: '0.5rem 1rem', fontSize: '0.75rem' }}>
+                      <Play size={14} /> Play
+                    </button>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{skill.duration}</span>
+                  </div>
+                </div>
+              </div>
+            </AnimatedCard>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section style={{ padding: 'var(--space-4xl) 0' }}>
+      <div className="container">
+        <AnimatedCard className="card-blue" style={{ padding: 'var(--space-2xl)', textAlign: 'center' }}>
+          <h3 style={{ fontSize: '1.4rem', marginBottom: 'var(--space-sm)', fontFamily: 'Playfair Display, serif', fontWeight: 600 }}>Subscribe to The Cyborg Perspective</h3>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)' }}>New episodes every two weeks. Quick Listens added weekly.</p>
           <div style={{ display: 'flex', gap: 'var(--space-sm)', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="btn tech">Apple Podcasts</button>
             <button className="btn tech">Spotify</button>
             <button className="btn tech">YouTube</button>
-            <button className="btn outline">RSS</button>
+            <button className="btn outline">RSS Feed</button>
           </div>
         </AnimatedCard>
       </div>
@@ -1713,6 +1810,7 @@ const ContactPage = () => (
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
+            <span className="badge blue" style={{ marginBottom: 'var(--space-md)', display: 'inline-block' }}>CONTACT US</span>
             <h1 className="page-title">Get In Touch.</h1>
             <p className="page-subtitle" style={{ marginTop: 'var(--space-lg)' }}>
               Questions? Ideas? Just want to say hi? We love hearing from our community.
