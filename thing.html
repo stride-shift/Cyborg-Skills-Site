@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine? 💖</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #ffafbd, #ffc3a0); overflow: hidden; }
+
+    .card, .fullpage { background: white; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); padding: 2.5rem 3rem; text-align: center; max-width: 420px; transition: all 0.8s ease; }
+
+    .fullpage { width: 100vw; height: 100vh; max-width: none; border-radius: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; }
+
+    h1 { color: #e63946; margin-bottom: 1rem; }
+    p { color: #444; margin-bottom: 1rem; font-size: 1.05rem; }
+    .buttons { display: flex; justify-content: center; gap: 1rem; }
+    button { border: none; padding: 0.8rem 1.8rem; border-radius: 999px; font-size: 1rem; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .yes { background: #e63946; color: white; }
+    .no { background: #ddd; color: #555; position: relative; }
+
+    .hidden { display: none; }
+    .hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+    .heart { position: absolute; bottom: -20px; font-size: 1.5rem; animation: floatUp 6s linear infinite; opacity: 0.8; }
+    @keyframes floatUp { from { transform: translateY(0) scale(1); opacity: 1; } to { transform: translateY(-110vh) scale(1.4); opacity: 0; } }
+
+    /* Collage Styles */
+    .collage { display: flex; flex-wrap: wrap; width:90%; max-width: 800px; gap: 12px; justify-content: center; margin-top: 2rem; }
+    .collage video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* use cover if you want full bleed */
+        opacity: 0;
+        transition: opacity 1s ease;
+    }
+
+    .collage.show video {
+        opacity: 1;
+    }
+
+    /* Animations */
+    .fade-out { opacity: 0; transform: scale(0.8); }
+    .fade-in { opacity: 1; transform: scale(1); }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <h1>Hey my love 💕</h1>
+    <p>Every year I choose you all over again. So I just want to ask one simple question...</p>
+    <h2>Will you be my Valentine? 🌹</h2>
+    <div class="buttons">
+      <button class="yes" onclick="sayYes()">Yes 💖</button>
+      <button class="no" onmouseover="moveNo()">No 🙃</button>
+    </div>
+  </div>
+
+  <div class="fullpage hidden" id="success">
+    <h1>YAY!! 🥰💘</h1>
+    <p>You just made me the happiest person ever. I love you endlessly ❤️</p>
+    <p>Happy Valentine's Day 💐</p>
+
+    <div class="collage" id="collage">
+        <video
+        id="collageVideo"
+        preload="auto"
+        playsinline
+        >
+            <source src="file/photo/War Thunder_replay_2026.01.29-20.12.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+  </div>
+
+  <div class="hearts" id="hearts"></div>
+
+  <audio id="bgMusic" src="file/Masego-Navajo-_audio_-_mBhVvCcjgL4_.mp3" preload="auto"></audio>
+
+  <script>
+    const noBtn = document.querySelector('.no');
+    const card = document.getElementById('card');
+    const success = document.getElementById('success');
+    const heartsContainer = document.getElementById('hearts');
+    const collage = document.getElementById('collage');
+    const bgMusic = document.getElementById('bgMusic');
+
+    function moveNo() {
+      const x = Math.random() * 200 - 100;
+      const y = Math.random() * 200 - 100;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function sayYes() {
+        card.classList.add('fade-out');
+        startHearts();
+
+        // Wait until audio is loaded and ready to play
+        bgMusic.addEventListener('canplaythrough', () => {
+            bgMusic.volume = 0.6;
+            bgMusic.play().catch(err => console.log('Audio play failed:', err));
+        }, { once: true });
+
+        setTimeout(() => {
+            card.classList.add('hidden');
+            success.classList.remove('hidden');
+        }, 800);
+    }
+
+    function startHearts() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerText = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = 4 + Math.random() * 4 + 's';
+        heartsContainer.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, 8000);
+      }, 300);
+    }
+
+    document.addEventListener('click', () => { bgMusic.play().catch(() => {}); });
+    document.addEventListener('touchstart', () => { bgMusic.play().catch(() => {}); });
+  </script>
+
+</body>
+</html>
