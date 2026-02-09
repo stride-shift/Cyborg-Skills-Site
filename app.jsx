@@ -693,23 +693,7 @@ const styles = `
     background-clip: text;
   }
 
-  .gradient-underline {
-    position: relative;
-    display: inline;
-    color: var(--text-white);
-  }
 
-  .gradient-underline::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0.05em;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--green-accent), var(--blue-accent));
-    border-radius: 2px;
-    opacity: 0.7;
-  }
 
   .page-subtitle {
     font-size: clamp(1.05rem, 2vw, 1.25rem);
@@ -1620,13 +1604,11 @@ const HomePage = () => (
           <div>
             <span className="badge green" style={{ marginBottom: 'var(--space-sm)', display: 'inline-block', animation: 'fadeInUp 0.8s ease backwards' }}>CYBORG SKILLS</span>
             <h1 className="page-title" style={{ animation: 'fadeInUp 0.8s ease 0.1s backwards', marginBottom: 'var(--space-md)' }}>
-              <span className="gradient-underline">The world is changing</span><br />
-              faster than most people<br />
-              realize, but so are we.
+              Stop prompting AI.<br />
+              Start <span style={{ color: 'var(--green-accent)' }}>thinking</span> with it.
             </h1>
             <p className="page-subtitle" style={{ marginBottom: 'var(--space-lg)', animation: 'fadeInUp 0.8s ease 0.2s backwards' }}>
-              Extend your cognitive ability. Make AI disappear into how you think.
-              Build the cyborg skills that turn human + AI into one system.
+              Seven habits that turn AI from a tool you use into an extension of how you think. Not a course — a cognitive upgrade.
             </p>
             <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', animation: 'fadeInUp 0.8s ease 0.3s backwards' }}>
               <a href="#experiment-table" className="btn primary">
