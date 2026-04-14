@@ -3107,10 +3107,10 @@ const VIDEOS = [
     title: 'Poke a hole first.',
     subtitle: 'The critique habit — an always-on devil\'s advocate.',
     description: 'There\'s real vulnerability in asking someone to poke holes in your work. Even when you do ask, they might soften, or they\'ve got their own biases. But an AI won\'t soften unless you ask it to. Episode two of the habit series.',
-    duration: '4:17',
+    duration: '4:18',
     runtime: 258,
     src: `${VIDEO_STORAGE_BASE}/critique.mp4`,
-    ready: false,
+    ready: true,
   },
 ];
 
