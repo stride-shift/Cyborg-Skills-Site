@@ -3123,6 +3123,17 @@ const VIDEOS = [
     src: `${VIDEO_STORAGE_BASE}/suggest.mp4`,
     ready: true,
   },
+  {
+    id: 'plan',
+    episode: 'Episode 04',
+    title: 'The pile of unfinished things.',
+    subtitle: 'The plan habit — turning wish into motion.',
+    description: 'Look around your life. There\'s a half-painted wall, an app you stopped using, a book you keep meaning to read. Not character failures — usually just one thing missing: the concrete next step. Episode four: a small habit for converting intentions into started things.',
+    duration: '3:46',
+    runtime: 226,
+    src: `${VIDEO_STORAGE_BASE}/plan.mp4`,
+    ready: true,
+  },
 ];
 
 const VideoCard = ({ video }) => {
