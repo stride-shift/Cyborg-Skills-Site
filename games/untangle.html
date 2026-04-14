@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untangle - Cyborg Skills</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Lato', sans-serif;
+    background: #060a12;
+    color: #f0f2f5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+  .game-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Settings gear */
+  .settings-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #8892a4;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+    z-index: 200;
+  }
+  .settings-btn:hover { background: rgba(255,255,255,0.1); color: #f0f2f5; }
+
+  /* API key modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(6,10,18,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    animation: fadeIn 0.3s;
+  }
+  .modal-card {
+    background: #0c1220;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 36px;
+    max-width: 460px;
+    width: 90%;
+  }
+  .modal-card h2 { font-size: 1.4rem; margin-bottom: 8px; }
+  .modal-card p { color: #8892a4; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+  .modal-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    color: #f0f2f5;
+    font-size: 0.95rem;
+    font-family: 'Lato', sans-serif;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 16px;
+  }
+  .modal-input:focus {
+    border-color: rgba(62,207,113,0.5);
+    box-shadow: 0 0 16px rgba(62,207,113,0.1);
+  }
+  .modal-input::placeholder { color: #5a6478; }
+
+  /* Intro screen */
+  .intro-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .intro-header-img {
+    width: 100%;
+    max-width: 700px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    opacity: 0.9;
+  }
+  .intro-screen h1 { font-size: 3.2rem; margin-bottom: 10px; letter-spacing: -1px; }
+  .intro-tagline {
+    font-size: 1.15rem;
+    color: #8892a4;
+    max-width: 500px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .intro-rules {
+    text-align: left;
+    max-width: 520px;
+    margin: 0 auto 32px;
+    color: #c8cdd5;
+    font-size: 0.92rem;
+    line-height: 1.9;
+    list-style: none;
+    counter-reset: rules;
+  }
+  .intro-rules li {
+    counter-increment: rules;
+    margin-bottom: 6px;
+    padding-left: 8px;
+  }
+  .intro-rules li::before {
+    content: counter(rules) ".";
+    color: #3ecf71;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 24px 0 16px;
+  }
+  .header h1 { font-size: 2rem; margin-bottom: 4px; }
+  .header p { color: #8892a4; font-size: 0.9rem; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 14px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat { text-align: center; }
+  .stat-value { font-size: 1.4rem; font-weight: 700; color: #3ecf71; }
+  .stat-label { font-size: 0.72rem; color: #5a6478; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Energy dots */
+  .energy-dots {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .energy-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3ecf71;
+    transition: all 0.3s;
+  }
+  .energy-dot.spent {
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* Scenario card */
+  .scenario-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .scenario-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5a6478;
+    margin-bottom: 12px;
+  }
+  .scenario-text {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #c8cdd5;
+  }
+  .scenario-category {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 16px;
+    background: rgba(77,159,240,0.1);
+    color: #4d9ff0;
+    border: 1px solid rgba(77,159,240,0.2);
+  }
+
+  /* Hand */
+  .hand-section {
+    margin-bottom: 24px;
+  }
+  .hand-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5a6478;
+    margin-bottom: 12px;
+  }
+  .hand {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .move-card {
+    flex: 1;
+    min-width: 150px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .move-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+  .move-card.selected {
+    border-color: #3ecf71;
+    background: rgba(62,207,113,0.08);
+    box-shadow: 0 0 20px rgba(62,207,113,0.1);
+  }
+  .move-card.played {
+    opacity: 0.25;
+    pointer-events: none;
+    transform: none;
+  }
+  .move-card.disabled {
+    opacity: 0.2;
+    pointer-events: none;
+    transform: none;
+  }
+  .move-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .move-desc {
+    font-size: 0.78rem;
+    color: #8892a4;
+    line-height: 1.4;
+  }
+  .move-cost {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(240,165,0,0.12);
+    border: 1px solid rgba(240,165,0,0.2);
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #f0a500;
+  }
+
+  /* Move input area */
+  .move-input-area {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: slideUp 0.3s ease-out;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .move-input-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .move-input-tag {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: rgba(62,207,113,0.12);
+    color: #3ecf71;
+    border: 1px solid rgba(62,207,113,0.25);
+  }
+  .move-input-prompt {
+    color: #8892a4;
+    font-size: 0.88rem;
+  }
+  .move-textarea {
+    width: 100%;
+    padding: 16px 18px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #f0f2f5;
+    font-size: 0.95rem;
+    font-family: 'Lato', sans-serif;
+    outline: none;
+    resize: vertical;
+    min-height: 70px;
+    max-height: 150px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.5;
+  }
+  .move-textarea:focus {
+    border-color: rgba(62,207,113,0.4);
+    box-shadow: 0 0 20px rgba(62,207,113,0.08);
+  }
+  .move-textarea::placeholder { color: #4a5568; }
+  .move-input-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    justify-content: flex-end;
+  }
+
+  /* AI response area */
+  .ai-response-area {
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s;
+  }
+  .ai-response-card {
+    background: rgba(77,159,240,0.04);
+    border: 1px solid rgba(77,159,240,0.15);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 12px;
+  }
+  .ai-response-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .ai-move-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ai-move-tag {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: rgba(77,159,240,0.12);
+    color: #4d9ff0;
+    border: 1px solid rgba(77,159,240,0.25);
+  }
+  .ai-player-text {
+    font-size: 0.82rem;
+    color: #6b7a8d;
+    font-style: italic;
+  }
+  .ai-stars {
+    display: flex;
+    gap: 3px;
+  }
+  .ai-star {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.15);
+  }
+  .ai-star.filled { color: #f0a500; }
+  .ai-response-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #c8cdd5;
+  }
+
+  /* Combo */
+  .combo-card {
+    background: rgba(240,165,0,0.06);
+    border: 1px solid rgba(240,165,0,0.2);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    animation: comboFlash 0.6s ease-out;
+  }
+  @keyframes comboFlash {
+    0% { opacity: 0; transform: scale(0.95); box-shadow: 0 0 0 rgba(240,165,0,0); }
+    50% { box-shadow: 0 0 30px rgba(240,165,0,0.2); }
+    100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 rgba(240,165,0,0); }
+  }
+  .combo-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .combo-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #f0a500;
+    font-weight: 700;
+  }
+  .combo-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f0a500;
+  }
+  .combo-points {
+    font-size: 0.78rem;
+    color: #f0a500;
+    opacity: 0.7;
+  }
+  .combo-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #c8cdd5;
+  }
+
+  /* Thinking animation */
+  .thinking {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    color: #8892a4;
+    font-size: 0.9rem;
+  }
+  .thinking-dots {
+    display: flex;
+    gap: 4px;
+  }
+  .thinking-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4d9ff0;
+    animation: pulse 1.4s infinite;
+  }
+  .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+  .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* Error */
+  .error-card {
+    background: rgba(220,50,50,0.06);
+    border: 1px solid rgba(220,50,50,0.2);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+    animation: fadeIn 0.3s;
+  }
+  .error-text { color: #e85555; font-size: 0.9rem; margin-bottom: 10px; }
+
+  /* Buttons */
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: 'Lato', sans-serif;
+  }
+  .btn-primary {
+    background: #3ecf71;
+    color: #060a12;
+  }
+  .btn-primary:hover { background: #2eb85c; }
+  .btn-primary:disabled { opacity: 0.3; cursor: default; }
+  .btn-secondary {
+    background: rgba(255,255,255,0.06);
+    color: #c8cdd5;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+  .btn-small {
+    padding: 8px 18px;
+    font-size: 0.82rem;
+    border-radius: 8px;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: #8892a4;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.04); color: #c8cdd5; }
+
+  /* Score popup */
+  .score-popup {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(6,10,18,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fadeIn 0.3s;
+  }
+  .score-card {
+    background: #0c1220;
+    border: 1px solid rgba(62,207,113,0.2);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    max-width: 440px;
+    width: 90%;
+  }
+  .score-card h2 { font-size: 1.8rem; margin-bottom: 8px; }
+  .score-value { font-size: 3.2rem; font-weight: 900; color: #3ecf71; margin: 16px 0; }
+  .score-breakdown {
+    color: #8892a4;
+    font-size: 0.85rem;
+    line-height: 2;
+    margin-bottom: 24px;
+    text-align: left;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .score-row span { color: #f0a500; font-weight: 600; }
+
+  /* Game over */
+  .rating-badge {
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+  .rating-emerging { background: rgba(138,150,170,0.15); color: #8a96aa; border: 1px solid rgba(138,150,170,0.3); }
+  .rating-augmented { background: rgba(77,159,240,0.12); color: #4d9ff0; border: 1px solid rgba(77,159,240,0.25); }
+  .rating-integrated { background: rgba(240,165,0,0.12); color: #f0a500; border: 1px solid rgba(240,165,0,0.25); }
+  .rating-cyborg { background: rgba(62,207,113,0.12); color: #3ecf71; border: 1px solid rgba(62,207,113,0.25); }
+
+  /* Scenario loading shimmer */
+  .shimmer-block {
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    height: 16px;
+    margin-bottom: 10px;
+  }
+  .shimmer-block:nth-child(2) { width: 85%; }
+  .shimmer-block:nth-child(3) { width: 70%; }
+  .shimmer-block:nth-child(4) { width: 90%; height: 16px; }
+  .shimmer-block:nth-child(5) { width: 60%; }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .intro-screen h1 { font-size: 2.4rem; }
+    .move-card { min-width: 100%; }
+    .stats-bar { gap: 16px; }
+    .score-card { padding: 28px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useCallback, useEffect, useRef } = React;
+
+// --- GAME DATA ---
+
+const ALL_MOVES = [
+  { id: 'zoom_out', name: 'Zoom Out', desc: 'See the bigger picture. What pattern connects these details?', cost: 1 },
+  { id: 'zoom_in', name: 'Zoom In', desc: 'Focus on the crucial detail everyone missed.', cost: 1 },
+  { id: 'flip', name: 'Flip Perspective', desc: 'See this from the other side. What do they see?', cost: 1 },
+  { id: 'trace', name: 'Trace the Ripple', desc: 'Follow the consequences. What happens next? And after that?', cost: 2 },
+  { id: 'crack', name: 'Find the Crack', desc: 'Where does this break? What assumption is fragile?', cost: 1 },
+  { id: 'bridge', name: 'Bridge Domains', desc: 'Borrow a solution from a completely different field.', cost: 2 },
+  { id: 'split', name: 'Split the Problem', desc: 'Decompose into parts. Which part is actually hard?', cost: 1 },
+  { id: 'reframe', name: 'Reframe It', desc: 'Change what the problem IS. Not a bug, a feature.', cost: 2 },
+  { id: 'parallel', name: 'Run Parallel', desc: 'Explore three approaches at once. Compare them live.', cost: 2 },
+  { id: 'surface', name: 'Surface the Unsaid', desc: 'What is everyone thinking but nobody is saying?', cost: 1 },
+];
+
+const SEED_SCENARIOS = [
+  "Your engineering team and sales team are at war over the product roadmap. Sales promised a client a feature that engineering says is technically impossible in the given timeline. The client contract is worth 30% of Q2 revenue. Engineering's tech lead just threatened to quit. The CEO wants harmony but also wants the deal.",
+  "You're the new director of a nonprofit. Donations are down 40%. Your two biggest donors have opposing political views and each wants the organization to take a public stance on a controversial issue. Your staff is demoralized, your board is divided, and a journalist just called asking about financial irregularities that turn out to be a bookkeeping error that looks terrible on paper.",
+  "You're leading a product launch at a startup. Two days before launch, your co-founder privately tells you they've been interviewing at Google. Your lead designer just realized the onboarding flow has a fundamental UX problem. Your investor is flying in for the launch event. And your biggest competitor just announced a nearly identical product this morning.",
+  "You're a hospital administrator. Your ER is chronically overcrowded. Nurses are burning out and leaving. The new electronic health records system is slower than the old paper system. A local news team wants to do a story on wait times. Your budget was just cut 15%. And a senior doctor who everyone loves but who resists all change is blocking every reform.",
+  "You're managing a construction project that's 3 months behind schedule. The client is threatening legal action. Your best project manager just had a family emergency and will be out for weeks. A subcontractor delivered materials that don't meet spec. The city inspector found a code violation. And it's about to be rainy season."
+];
+
+function drawHand(count = 5) {
+  const shuffled = [...ALL_MOVES].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+function getApiKey() {
+  return localStorage.getItem('cyborg_gemini_key') || '';
+}
+
+function setApiKey(key) {
+  localStorage.setItem('cyborg_gemini_key', key);
+}
+
+// --- AI API CALLS ---
+
+async function callGemini(prompt, systemInstruction) {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('NO_KEY');
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    systemInstruction: { parts: [{ text: systemInstruction }] },
+    generationConfig: {
+      temperature: 0.8,
+      responseMimeType: "application/json",
+    },
+  };
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`API error ${res.status}: ${err}`);
+  }
+
+  const data = await res.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Empty response from AI');
+  return JSON.parse(text);
+}
+
+async function generateScenario() {
+  const seed = SEED_SCENARIOS[Math.floor(Math.random() * SEED_SCENARIOS.length)];
+  const system = `You are a scenario designer for a cognitive skills game called Untangle. You create rich, multi-layered real-world situations that require clear thinking to navigate. Your scenarios should feel authentic and complex.`;
+  const prompt = `Here is a seed scenario concept: "${seed}"
+
+Generate a fresh, unique variation or twist on this concept. Make it specific and vivid. It should have:
+- Multiple stakeholders with conflicting interests
+- Time pressure
+- Hidden dynamics beneath the surface (things not immediately obvious)
+- Enough complexity that there's no single right answer
+
+Respond in JSON with this exact structure:
+{
+  "title": "A short evocative title for the scenario (3-6 words)",
+  "category": "One of: Business Strategy, Team Dynamics, Crisis Management, Creative Challenge, Complex Decision, Organizational Change",
+  "scenario": "The full scenario description. 3-5 sentences. Vivid, specific, with named stakes. Write in second person (you are...).",
+  "hidden_dynamics": "2-3 hidden dynamics beneath the surface that clever cognitive moves might uncover. This is for your reference in later responses."
+}`;
+
+  return await callGemini(prompt, system);
+}
+
+async function playMoveWithAI(scenario, moveName, moveDesc, playerApplication, previousMoves) {
+  const previousMovesDesc = previousMoves.map(m =>
+    `- ${m.moveName}: Player said "${m.playerText}" => Revealed: "${m.aiReveal}"`
+  ).join('\n');
+
+  const system = `You are the game master of Untangle, a cognitive skills game. You are a thinking PARTNER, not an oracle. You respond to the QUALITY of the player's thinking. Your role is to show what a cognitive move reveals about the scenario when applied well (or poorly).
+
+Key rules:
+- If the player's application is vague or generic (like "I'd just zoom out"), give a shorter, more generic response and rate it 1 star
+- If the player's application shows real insight and specificity, give a rich, detailed response and rate it 2-3 stars
+- A 3-star response should feel like a breakthrough moment
+- Your response should feel like a collaboration, not a lecture
+- Reference specific details from the scenario
+- If this move naturally combos with a previous move, recognize and explain the synergy`;
+
+  const prompt = `SCENARIO: ${scenario}
+
+PREVIOUS MOVES PLAYED:
+${previousMoves.length > 0 ? previousMovesDesc : '(none yet)'}
+
+CURRENT MOVE: ${moveName} - ${moveDesc}
+
+PLAYER'S APPLICATION: "${playerApplication}"
+
+Evaluate the player's application of this cognitive move to the scenario. Respond in JSON:
+{
+  "reveal": "What this cognitive move uncovers about the scenario (2-4 sentences). Be specific to the scenario. Match depth to quality of application.",
+  "quality": <1, 2, or 3>,
+  "quality_note": "A brief note on why this rating (1 sentence). Be encouraging but honest.",
+  "combo": ${previousMoves.length > 0 ? `"If this naturally synergizes with any previous move (${previousMoves.map(m => m.moveName).join(', ')}), describe the combo insight (1-2 sentences). Otherwise null."` : 'null'},
+  "combo_name": ${previousMoves.length > 0 ? '"If there is a combo, give it a short evocative name (2-3 words). Otherwise null."' : 'null'},
+  "combo_bonus": ${previousMoves.length > 0 ? '"If there is a combo, give bonus points (2-4). Otherwise null."' : 'null'}
+}`;
+
+  return await callGemini(prompt, system);
+}
+
+// --- COMPONENTS ---
+
+function ApiKeyModal({ onSave, onCancel, initialKey }) {
+  const [key, setKey] = useState(initialKey || '');
+  return (
+    <div className="modal-overlay" onClick={onCancel}>
+      <div className="modal-card" onClick={e => e.stopPropagation()}>
+        <h2>Gemini API Key</h2>
+        <p>This game uses Google's Gemini AI as your thinking partner. Enter your API key to play. Your key is stored locally in your browser and never sent anywhere except Google's API.</p>
+        <input
+          className="modal-input"
+          type="password"
+          placeholder="Paste your Gemini API key here..."
+          value={key}
+          onChange={e => setKey(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter' && key.trim()) onSave(key.trim()); }}
+          autoFocus
+        />
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+          {onCancel && <button className="btn btn-ghost btn-small" onClick={onCancel}>Cancel</button>}
+          <button className="btn btn-primary btn-small" onClick={() => key.trim() && onSave(key.trim())} disabled={!key.trim()}>Save Key</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ThinkingIndicator({ label }) {
+  return (
+    <div className="thinking">
+      <div className="thinking-dots">
+        <div className="thinking-dot"></div>
+        <div className="thinking-dot"></div>
+        <div className="thinking-dot"></div>
+      </div>
+      <span>{label || 'AI is thinking...'}</span>
+    </div>
+  );
+}
+
+function Stars({ count, max = 3 }) {
+  return (
+    <div className="ai-stars">
+      {Array.from({ length: max }, (_, i) => (
+        <span key={i} className={`ai-star ${i < count ? 'filled' : ''}`}>&#9733;</span>
+      ))}
+    </div>
+  );
+}
+
+// --- MAIN APP ---
+
+function App() {
+  const [screen, setScreen] = useState('intro'); // intro, play, gameover
+  const [showKeyModal, setShowKeyModal] = useState(false);
+  const [round, setRound] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
+  const [scenario, setScenario] = useState(null);
+  const [scenarioMeta, setScenarioMeta] = useState(null); // title, category
+  const [hand, setHand] = useState([]);
+  const [energy, setEnergy] = useState(6);
+  const [selectedMove, setSelectedMove] = useState(null);
+  const [playerInput, setPlayerInput] = useState('');
+  const [playedMoves, setPlayedMoves] = useState([]); // { moveName, moveId, playerText, aiReveal, quality, combo, comboName, comboBonus }
+  const [isThinking, setIsThinking] = useState(false);
+  const [isLoadingScenario, setIsLoadingScenario] = useState(false);
+  const [error, setError] = useState(null);
+  const [showScore, setShowScore] = useState(false);
+  const [roundScoreData, setRoundScoreData] = useState(null);
+  const [roundScores, setRoundScores] = useState([]);
+  const inputRef = useRef(null);
+  const responsesEndRef = useRef(null);
+
+  // Check for API key on mount
+  useEffect(() => {
+    if (!getApiKey()) {
+      setShowKeyModal(true);
+    }
+  }, []);
+
+  const saveKey = useCallback((key) => {
+    setApiKey(key);
+    setShowKeyModal(false);
+  }, []);
+
+  const startNewRound = useCallback(async (roundNum) => {
+    setIsLoadingScenario(true);
+    setError(null);
+    setHand(drawHand(5));
+    setPlayedMoves([]);
+    setEnergy(6);
+    setSelectedMove(null);
+    setPlayerInput('');
+    setShowScore(false);
+    setRoundScoreData(null);
+    setRound(roundNum);
+    setScreen('play');
+
+    try {
+      const result = await generateScenario();
+      setScenario(result.scenario);
+      setScenarioMeta({ title: result.title, category: result.category });
+    } catch (err) {
+      if (err.message === 'NO_KEY') {
+        setShowKeyModal(true);
+      } else {
+        setError('Failed to generate scenario: ' + err.message);
+      }
+    } finally {
+      setIsLoadingScenario(false);
+    }
+  }, []);
+
+  const startGame = useCallback(() => {
+    if (!getApiKey()) {
+      setShowKeyModal(true);
+      return;
+    }
+    setTotalScore(0);
+    setRoundScores([]);
+    startNewRound(1);
+  }, [startNewRound]);
+
+  const selectMove = useCallback((move) => {
+    if (selectedMove?.id === move.id) {
+      setSelectedMove(null);
+      setPlayerInput('');
+    } else {
+      setSelectedMove(move);
+      setPlayerInput('');
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [selectedMove]);
+
+  const submitMove = useCallback(async () => {
+    if (!selectedMove || !playerInput.trim() || isThinking) return;
+
+    const move = selectedMove;
+    const text = playerInput.trim();
+
+    setIsThinking(true);
+    setError(null);
+    setSelectedMove(null);
+    setPlayerInput('');
+
+    try {
+      const result = await playMoveWithAI(
+        scenario,
+        move.name,
+        move.desc,
+        text,
+        playedMoves
+      );
+
+      const newMove = {
+        moveId: move.id,
+        moveName: move.name,
+        playerText: text,
+        aiReveal: result.reveal,
+        quality: result.quality || 1,
+        qualityNote: result.quality_note || '',
+        combo: result.combo || null,
+        comboName: result.combo_name || null,
+        comboBonus: result.combo_bonus || null,
+      };
+
+      setPlayedMoves(prev => [...prev, newMove]);
+      setEnergy(prev => prev - move.cost);
+
+      // Scroll to bottom after response
+      setTimeout(() => responsesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+    } catch (err) {
+      if (err.message === 'NO_KEY') {
+        setShowKeyModal(true);
+      } else {
+        setError('AI response failed: ' + err.message);
+        // Re-select the move so player can retry
+        setSelectedMove(move);
+        setPlayerInput(text);
+      }
+    } finally {
+      setIsThinking(false);
+    }
+  }, [selectedMove, playerInput, isThinking, scenario, playedMoves]);
+
+  const finishRound = useCallback(() => {
+    const basePoints = playedMoves.length * 3;
+    const qualityPoints = playedMoves.reduce((sum, m) => sum + (m.quality * 2), 0);
+    const comboPoints = playedMoves.reduce((sum, m) => sum + (m.comboBonus || 0), 0);
+    const efficiencyPoints = energy;
+    const total = basePoints + qualityPoints + comboPoints + efficiencyPoints;
+
+    const data = { basePoints, qualityPoints, comboPoints, efficiencyPoints, total };
+    setRoundScoreData(data);
+    setTotalScore(prev => prev + total);
+    setRoundScores(prev => [...prev, total]);
+    setShowScore(true);
+  }, [playedMoves, energy]);
+
+  const continueGame = useCallback(() => {
+    setShowScore(false);
+    if (round >= 3) {
+      setScreen('gameover');
+    } else {
+      startNewRound(round + 1);
+    }
+  }, [round, startNewRound]);
+
+  const canPlayMove = (move) => {
+    return energy >= move.cost && !playedMoves.find(m => m.moveId === move.id) && !isThinking;
+  };
+
+  // --- RENDER ---
+
+  // Settings gear (always visible)
+  const settingsGear = (
+    <button className="settings-btn" onClick={() => setShowKeyModal(true)} title="API Settings">
+      &#9881;
+    </button>
+  );
+
+  // API Key modal
+  const keyModal = showKeyModal && (
+    <ApiKeyModal
+      initialKey={getApiKey()}
+      onSave={saveKey}
+      onCancel={getApiKey() ? () => setShowKeyModal(false) : null}
+    />
+  );
+
+  // --- INTRO ---
+  if (screen === 'intro') {
+    return (
+      <div className="game-container">
+        {settingsGear}
+        {keyModal}
+        <div className="intro-screen">
+          <img src="assets/header_untangle.png" alt="Untangle" className="intro-header-img" onError={e => { e.target.style.display = 'none'; }} />
+          <h1>Untangle</h1>
+          <p className="intro-tagline">Think with AI to find clarity in chaos</p>
+          <ul className="intro-rules">
+            <li>You'll face <strong>3 complex scenarios</strong> generated live by AI -- real-world messes with no easy answers.</li>
+            <li>You get a <strong>hand of 5 cognitive moves</strong> and <strong>6 energy</strong> to spend.</li>
+            <li>Select a move, then describe <strong>how you'd apply it</strong> to the scenario. The AI responds to the quality of your thinking.</li>
+            <li>Chain moves that <strong>naturally synergize</strong> to discover combos and unlock deeper insights.</li>
+            <li>Score points for moves played, thinking quality, combos, and efficiency.</li>
+          </ul>
+          <button className="btn btn-primary" onClick={startGame}>Start Game</button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- GAME OVER ---
+  if (screen === 'gameover') {
+    const rating = totalScore >= 55 ? 'Cyborg' : totalScore >= 40 ? 'Integrated' : totalScore >= 25 ? 'Augmented' : 'Emerging';
+    const ratingClass = `rating-${rating.toLowerCase()}`;
+    return (
+      <div className="game-container">
+        {settingsGear}
+        {keyModal}
+        <div className="intro-screen">
+          <h1>Game Complete</h1>
+          <div className="score-value" style={{ fontSize: '4rem', margin: '20px 0' }}>{totalScore}</div>
+          <p style={{ color: '#8892a4', fontSize: '1rem', marginBottom: '16px' }}>Total Score</p>
+          <div className="score-breakdown" style={{ textAlign: 'center', maxWidth: '300px', margin: '0 auto 20px' }}>
+            {roundScores.map((s, i) => (
+              <span key={i} style={{ color: '#c8cdd5' }}>Round {i + 1}: <span style={{ color: '#f0a500' }}>{s}</span>{i < roundScores.length - 1 ? ' / ' : ''}</span>
+            ))}
+          </div>
+          <div className={`rating-badge ${ratingClass}`}>{rating}</div>
+          <br /><br />
+          <button className="btn btn-primary" onClick={startGame}>Play Again</button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- PLAY ---
+  return (
+    <div className="game-container">
+      {settingsGear}
+      {keyModal}
+
+      <div className="header">
+        <h1>Untangle</h1>
+        <p>Round {round} of 3</p>
+      </div>
+
+      <div className="stats-bar">
+        <div className="stat">
+          <div className="energy-dots">
+            {Array.from({ length: 6 }, (_, i) => (
+              <div key={i} className={`energy-dot ${i >= energy ? 'spent' : ''}`}></div>
+            ))}
+          </div>
+          <div className="stat-label">Energy</div>
+        </div>
+        <div className="stat">
+          <div className="stat-value">{playedMoves.length}</div>
+          <div className="stat-label">Moves</div>
+        </div>
+        <div className="stat">
+          <div className="stat-value">{playedMoves.filter(m => m.combo).length}</div>
+          <div className="stat-label">Combos</div>
+        </div>
+        <div className="stat">
+          <div className="stat-value">{totalScore}</div>
+          <div className="stat-label">Score</div>
+        </div>
+      </div>
+
+      {/* Scenario */}
+      <div className="scenario-card">
+        <div className="scenario-label">{scenarioMeta?.title || 'The Mess'}</div>
+        {isLoadingScenario ? (
+          <div>
+            <div className="shimmer-block" style={{ width: '100%' }}></div>
+            <div className="shimmer-block"></div>
+            <div className="shimmer-block"></div>
+            <div className="shimmer-block"></div>
+            <div className="shimmer-block"></div>
+          </div>
+        ) : (
+          <>
+            <div className="scenario-text">{scenario}</div>
+            {scenarioMeta?.category && <div className="scenario-category">{scenarioMeta.category}</div>}
+          </>
+        )}
+      </div>
+
+      {/* Error display */}
+      {error && (
+        <div className="error-card">
+          <div className="error-text">{error}</div>
+          <button className="btn btn-ghost btn-small" onClick={() => setError(null)}>Dismiss</button>
+        </div>
+      )}
+
+      {/* AI Responses */}
+      {playedMoves.length > 0 && (
+        <div className="ai-response-area">
+          {playedMoves.map((m, i) => (
+            <React.Fragment key={i}>
+              <div className="ai-response-card">
+                <div className="ai-response-header">
+                  <div className="ai-move-label">
+                    <span className="ai-move-tag">{m.moveName}</span>
+                    <span className="ai-player-text">"{m.playerText}"</span>
+                  </div>
+                  <Stars count={m.quality} />
+                </div>
+                <div className="ai-response-text">{m.aiReveal}</div>
+                {m.qualityNote && (
+                  <div style={{ marginTop: 10, fontSize: '0.8rem', color: '#6b7a8d', fontStyle: 'italic' }}>{m.qualityNote}</div>
+                )}
+              </div>
+              {m.combo && (
+                <div className="combo-card">
+                  <div className="combo-header">
+                    <span className="combo-label">Combo</span>
+                    <span className="combo-name">{m.comboName || 'Synergy'}</span>
+                    <span className="combo-points">+{m.comboBonus}</span>
+                  </div>
+                  <div className="combo-text">{m.combo}</div>
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      )}
+
+      {/* Thinking indicator */}
+      {isThinking && <ThinkingIndicator label="AI is analyzing your move..." />}
+
+      <div ref={responsesEndRef}></div>
+
+      {/* Move input area */}
+      {selectedMove && !isThinking && (
+        <div className="move-input-area">
+          <div className="move-input-header">
+            <span className="move-input-tag">{selectedMove.name}</span>
+            <span className="move-input-prompt">How would you apply this move to the situation?</span>
+          </div>
+          <textarea
+            ref={inputRef}
+            className="move-textarea"
+            placeholder={`Describe how you'd ${selectedMove.name.toLowerCase()} here. Be specific -- the AI rewards sharp thinking...`}
+            value={playerInput}
+            onChange={e => setPlayerInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey && playerInput.trim()) {
+                e.preventDefault();
+                submitMove();
+              }
+            }}
+          />
+          <div className="move-input-actions">
+            <button className="btn btn-ghost btn-small" onClick={() => { setSelectedMove(null); setPlayerInput(''); }}>Cancel</button>
+            <button
+              className="btn btn-primary btn-small"
+              onClick={submitMove}
+              disabled={!playerInput.trim()}
+            >
+              Send Move ({selectedMove.cost} energy)
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Hand */}
+      {!isLoadingScenario && (
+        <div className="hand-section">
+          <div className="hand-label">Your Moves</div>
+          <div className="hand">
+            {hand.map(m => {
+              const isPlayed = playedMoves.find(p => p.moveId === m.id);
+              const cantAfford = energy < m.cost;
+              const isSelected = selectedMove?.id === m.id;
+              let cls = 'move-card';
+              if (isPlayed) cls += ' played';
+              else if (cantAfford || isThinking) cls += ' disabled';
+              if (isSelected) cls += ' selected';
+              return (
+                <div
+                  key={m.id}
+                  className={cls}
+                  onClick={() => {
+                    if (!isPlayed && !cantAfford && !isThinking) selectMove(m);
+                  }}
+                >
+                  <div className="move-cost">{m.cost}</div>
+                  <div className="move-name">{m.name}</div>
+                  <div className="move-desc">{m.desc}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Finish round button */}
+      {playedMoves.length > 0 && !isThinking && !selectedMove && !showScore && (
+        <div className="actions">
+          <button className="btn btn-primary" onClick={finishRound}>
+            Finish Round
+          </button>
+        </div>
+      )}
+
+      {/* Score popup */}
+      {showScore && roundScoreData && (
+        <div className="score-popup">
+          <div className="score-card">
+            <h2>Round {round} Complete</h2>
+            <div className="score-value">{roundScoreData.total}</div>
+            <div className="score-breakdown">
+              <div className="score-row"><span>Moves played ({playedMoves.length})</span><span>+{roundScoreData.basePoints}</span></div>
+              <div className="score-row"><span>Thinking quality</span><span>+{roundScoreData.qualityPoints}</span></div>
+              <div className="score-row"><span>Combos</span><span>+{roundScoreData.comboPoints}</span></div>
+              <div className="score-row"><span>Energy saved ({energy})</span><span>+{roundScoreData.efficiencyPoints}</span></div>
+            </div>
+            <button className="btn btn-primary" onClick={continueGame}>
+              {round >= 3 ? 'See Final Score' : 'Next Scenario'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+</script>
+</body>
+</html>

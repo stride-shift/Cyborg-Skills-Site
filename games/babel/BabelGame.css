@@ -1,0 +1,695 @@
+/* ═══════════════════════════════════════
+   BABEL - Rewrite the Rules of AI
+   ═══════════════════════════════════════ */
+
+.babel-game {
+  font-family: 'Lato', 'Segoe UI', sans-serif;
+  background: #060a12;
+  color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.babel-game .game-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ─── Animations ─── */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes starPop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes winGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(62,207,113,0.2); }
+  50% { box-shadow: 0 0 24px rgba(62,207,113,0.4); }
+}
+
+/* ─── Level Select ─── */
+
+.babel-game .level-select {
+  animation: fadeIn 0.4s ease;
+}
+
+.babel-game .level-select__header {
+  text-align: center;
+  padding: 40px 0 32px;
+}
+
+.babel-game .level-select__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  background: linear-gradient(135deg, #4d9ff0, #3ecf71);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.babel-game .level-select__subtitle {
+  color: #8892a4;
+  font-size: 1.05rem;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.babel-game .level-select__progress {
+  color: #5a6478;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ─── Chapter ─── */
+
+.babel-game .chapter {
+  margin-bottom: 28px;
+  animation: slideUp 0.4s ease;
+}
+
+.babel-game .chapter--locked {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.babel-game .chapter__header {
+  padding: 16px 20px;
+  border-left: 3px solid var(--chapter-color, #4d9ff0);
+  margin-bottom: 12px;
+}
+
+.babel-game .chapter__number {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--chapter-color, #4d9ff0);
+}
+
+.babel-game .chapter__name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  margin: 4px 0;
+}
+
+.babel-game .chapter__desc {
+  font-size: 0.85rem;
+  color: #8892a4;
+}
+
+.babel-game .chapter__progress {
+  font-size: 0.75rem;
+  color: #5a6478;
+}
+
+.babel-game .chapter__levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+/* ─── Level Button ─── */
+
+.babel-game .level-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #f0f2f5;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  font-family: inherit;
+}
+
+.babel-game .level-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--chapter-color, rgba(255,255,255,0.15));
+  transform: translateY(-2px);
+}
+
+.babel-game .level-btn--completed {
+  border-color: rgba(62,207,113,0.2);
+}
+
+.babel-game .level-btn--locked {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.babel-game .level-btn__number {
+  font-size: 0.65rem;
+  color: #5a6478;
+  letter-spacing: 1px;
+}
+
+.babel-game .level-btn__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.babel-game .level-btn__lock {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.75rem;
+}
+
+/* ─── Stars ─── */
+
+.babel-game .stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.babel-game .star {
+  color: rgba(255,255,255,0.1);
+  transition: color 0.2s;
+}
+
+.babel-game .star--filled {
+  color: #f0a500;
+}
+
+/* ─── Play Header ─── */
+
+.babel-game .play-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+.babel-game .play-header__info {
+  text-align: center;
+}
+
+.babel-game .play-header__chapter {
+  font-size: 0.7rem;
+  color: #5a6478;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.babel-game .play-header__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+}
+
+.babel-game .play-header__moves {
+  font-size: 0.85rem;
+  color: #8892a4;
+}
+
+/* ─── Goal & Hint ─── */
+
+.babel-game .play-goal {
+  background: rgba(77,159,240,0.06);
+  border: 1px solid rgba(77,159,240,0.15);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.4s ease;
+}
+
+.babel-game .play-goal__label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #4d9ff0;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.babel-game .play-goal p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #c8cdd5;
+}
+
+.babel-game .play-hint {
+  background: rgba(240,165,0,0.06);
+  border: 1px solid rgba(240,165,0,0.15);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  animation: slideUp 0.3s ease;
+}
+
+.babel-game .play-hint__label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #f0a500;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.babel-game .play-hint p {
+  font-size: 0.88rem;
+  color: #c8cdd5;
+}
+
+/* ─── Rule Board ─── */
+
+.babel-game .rule-board {
+  margin-bottom: 24px;
+  animation: fadeIn 0.4s ease;
+}
+
+.babel-game .rule-board__label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #5a6478;
+  margin-bottom: 10px;
+}
+
+.babel-game .rule-board__grid {
+  display: grid;
+  gap: 4px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 120px;
+}
+
+.babel-game .grid-cell {
+  aspect-ratio: auto;
+  min-height: 44px;
+  border: 1px dashed rgba(255,255,255,0.06);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.babel-game .grid-cell:hover {
+  border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.02);
+}
+
+.babel-game .grid-cell--occupied {
+  border-color: transparent;
+}
+
+/* ─── Block ─── */
+
+.babel-game .block {
+  padding: 8px 14px;
+  border: 2px solid;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.babel-game .block:hover {
+  transform: scale(1.05);
+}
+
+.babel-game .block:active,
+.babel-game .block--dragging {
+  cursor: grabbing;
+  opacity: 0.6;
+  transform: scale(0.95);
+}
+
+.babel-game .block--fixed {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.babel-game .block--fixed:hover {
+  transform: none;
+}
+
+.babel-game .block--active {
+  box-shadow: 0 0 12px rgba(62,207,113,0.3);
+}
+
+/* ─── Active Rules ─── */
+
+.babel-game .rule-board__active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(62,207,113,0.04);
+  border: 1px solid rgba(62,207,113,0.1);
+  border-radius: 8px;
+}
+
+.babel-game .active-rule {
+  font-size: 0.8rem;
+  color: #3ecf71;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.babel-game .active-rule__dot {
+  font-size: 0.5rem;
+}
+
+/* ─── Block Tray ─── */
+
+.babel-game .rule-board__tray {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: 10px;
+  min-height: 60px;
+}
+
+.babel-game .tray-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #5a6478;
+  margin-bottom: 8px;
+}
+
+.babel-game .tray-blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ─── AI Response ─── */
+
+.babel-game .ai-response {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  animation: slideUp 0.3s ease;
+  transition: all 0.3s;
+}
+
+.babel-game .ai-response--winning {
+  border-color: rgba(62,207,113,0.3);
+  box-shadow: 0 0 16px rgba(62,207,113,0.2);
+}
+
+.babel-game .ai-response__prompt {
+  margin-bottom: 14px;
+}
+
+.babel-game .ai-response__label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #5a6478;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.babel-game .ai-response__prompt p {
+  font-size: 0.9rem;
+  color: #8892a4;
+  font-style: italic;
+}
+
+.babel-game .ai-response__divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 14px 0;
+}
+
+.babel-game .ai-response__text {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: #c8cdd5;
+}
+
+.babel-game .ai-response__text p {
+  margin-bottom: 10px;
+}
+
+.babel-game .ai-response__text p:last-child {
+  margin-bottom: 0;
+}
+
+.babel-game .ai-response__text strong {
+  color: #f0f2f5;
+  font-weight: 700;
+}
+
+.babel-game .ai-response__note {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: #f0a500;
+  font-style: italic;
+  padding: 8px 12px;
+  background: rgba(240,165,0,0.06);
+  border-radius: 6px;
+}
+
+.babel-game .ai-response__success {
+  margin-top: 14px;
+  padding: 10px 16px;
+  background: rgba(62,207,113,0.08);
+  border: 1px solid rgba(62,207,113,0.2);
+  border-radius: 8px;
+  color: #3ecf71;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ─── Play Actions ─── */
+
+.babel-game .play-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.babel-game .play-feedback {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #f05050;
+  padding: 10px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ─── Buttons ─── */
+
+.babel-game .btn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  transition: all 0.2s;
+}
+
+.babel-game .btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.babel-game .btn-primary {
+  background: linear-gradient(135deg, #4d9ff0, #3a8de0);
+  color: white;
+}
+
+.babel-game .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(77,159,240,0.3);
+}
+
+.babel-game .btn-success {
+  background: linear-gradient(135deg, #3ecf71, #2db85e);
+  color: white;
+}
+
+.babel-game .btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(62,207,113,0.3);
+}
+
+.babel-game .btn-ghost {
+  background: rgba(255,255,255,0.06);
+  color: #8892a4;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.babel-game .btn-ghost:hover {
+  background: rgba(255,255,255,0.1);
+  color: #f0f2f5;
+}
+
+.babel-game .btn-text {
+  background: none;
+  border: none;
+  color: #5a6478;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.babel-game .btn-text:hover {
+  color: #8892a4;
+}
+
+/* ─── Win Screen ─── */
+
+.babel-game .win-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  animation: fadeIn 0.5s ease;
+}
+
+.babel-game .win-screen__card {
+  text-align: center;
+  padding: 40px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(62,207,113,0.2);
+  border-radius: 20px;
+  max-width: 380px;
+  width: 100%;
+}
+
+.babel-game .win-screen__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: #3ecf71;
+  margin-bottom: 4px;
+}
+
+.babel-game .win-screen__level {
+  color: #8892a4;
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.babel-game .win-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.babel-game .win-star {
+  font-size: 2.4rem;
+  color: rgba(255,255,255,0.08);
+  opacity: 0;
+  animation: starPop 0.4s ease forwards;
+}
+
+.babel-game .win-star--filled {
+  color: #f0a500;
+}
+
+.babel-game .win-screen__stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+.babel-game .win-stat {
+  text-align: center;
+}
+
+.babel-game .win-stat__value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #4d9ff0;
+}
+
+.babel-game .win-stat__label {
+  font-size: 0.7rem;
+  color: #5a6478;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.babel-game .win-screen__msg {
+  color: #8892a4;
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+
+.babel-game .win-screen__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+/* ─── Mobile ─── */
+
+@media (max-width: 600px) {
+  .babel-game .level-select__title {
+    font-size: 2.4rem;
+  }
+
+  .babel-game .chapter__levels {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+
+  .babel-game .block {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+
+  .babel-game .grid-cell {
+    min-height: 36px;
+  }
+
+  .babel-game .ai-response {
+    padding: 14px;
+  }
+
+  .babel-game .win-screen__card {
+    padding: 28px 20px;
+  }
+}

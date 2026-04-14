@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cascade - Cyborg Skills</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Lato', sans-serif;
+    background: #060a12;
+    color: #f0f2f5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(77,159,240,0.15); }
+    50% { box-shadow: 0 0 20px rgba(77,159,240,0.35); }
+  }
+  @keyframes pulseGreen {
+    0%, 100% { box-shadow: 0 0 6px rgba(62,207,113,0.1); }
+    50% { box-shadow: 0 0 16px rgba(62,207,113,0.25); }
+  }
+  @keyframes pulseAmber {
+    0%, 100% { box-shadow: 0 0 6px rgba(240,165,0,0.1); }
+    50% { box-shadow: 0 0 16px rgba(240,165,0,0.25); }
+  }
+  @keyframes pulseRed {
+    0%, 100% { box-shadow: 0 0 6px rgba(240,80,80,0.1); }
+    50% { box-shadow: 0 0 16px rgba(240,80,80,0.3); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes whatIfGlow {
+    0%, 100% { box-shadow: 0 0 12px rgba(77,159,240,0.3), 0 0 24px rgba(77,159,240,0.1); }
+    50% { box-shadow: 0 0 20px rgba(77,159,240,0.5), 0 0 40px rgba(77,159,240,0.2); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+  .slide-in { animation: slideInLeft 0.5s ease forwards; }
+
+  /* Game container */
+  .game-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Intro screen */
+  .intro-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+  .intro-header-img {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .intro-title {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #4d9ff0, #3ecf71);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .intro-tagline {
+    font-size: 1.1rem;
+    color: #8892a4;
+    margin-bottom: 40px;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+  .intro-btn {
+    background: linear-gradient(135deg, #4d9ff0, #3a8de0);
+    color: white;
+    border: none;
+    padding: 16px 48px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Lato', sans-serif;
+  }
+  .intro-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(77,159,240,0.3);
+  }
+
+  /* Settings gear */
+  .settings-gear {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #5a6478;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 100;
+  }
+  .settings-gear:hover { color: #4d9ff0; background: rgba(77,159,240,0.1); border-color: rgba(77,159,240,0.3); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-box {
+    background: #0f1520;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 420px;
+    width: 90%;
+  }
+  .modal-box h3 { font-size: 1.2rem; margin-bottom: 16px; }
+  .modal-box input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: #f0f2f5;
+    font-size: 0.95rem;
+    font-family: 'Lato', sans-serif;
+    margin-bottom: 16px;
+  }
+  .modal-box input:focus { outline: none; border-color: #4d9ff0; }
+  .modal-btns { display: flex; gap: 12px; justify-content: flex-end; }
+  .modal-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+    transition: all 0.2s;
+  }
+  .modal-btn.primary { background: #4d9ff0; color: white; }
+  .modal-btn.primary:hover { background: #3a8de0; }
+  .modal-btn.secondary { background: rgba(255,255,255,0.06); color: #8892a4; }
+  .modal-btn.secondary:hover { background: rgba(255,255,255,0.1); }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 16px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    animation: fadeIn 0.5s ease;
+  }
+  .stat { text-align: center; }
+  .stat-value { font-size: 1.4rem; font-weight: 700; }
+  .stat-value.blue { color: #4d9ff0; }
+  .stat-value.green { color: #3ecf71; }
+  .stat-value.gold { color: #f0a500; }
+  .stat-label { font-size: 0.75rem; color: #5a6478; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Header */
+  .game-header {
+    text-align: center;
+    padding: 20px 0 10px;
+  }
+  .game-header h1 { font-size: 1.8rem; margin-bottom: 4px; }
+  .game-header p { color: #5a6478; font-size: 0.85rem; }
+
+  /* Domains grid */
+  .domains-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .domain-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 14px;
+    transition: all 0.4s;
+    cursor: default;
+  }
+  .domain-card.health-green { animation: pulseGreen 3s ease infinite; }
+  .domain-card.health-amber { animation: pulseAmber 3s ease infinite; }
+  .domain-card.health-red { animation: pulseRed 2.5s ease infinite; }
+  .domain-card.selectable { cursor: pointer; }
+  .domain-card.selectable:hover { border-color: rgba(77,159,240,0.4); transform: translateY(-2px); }
+  .domain-card.selected { border-color: #4d9ff0; background: rgba(77,159,240,0.08); }
+  .domain-card.inactive { opacity: 0.35; }
+
+  .domain-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .domain-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  .domain-name {
+    font-weight: 700;
+    font-size: 0.82rem;
+  }
+  .domain-health-bar {
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .domain-health-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease, background 0.4s;
+  }
+  .domain-health-fill.green { background: #3ecf71; }
+  .domain-health-fill.amber { background: #f0a500; }
+  .domain-health-fill.red { background: #f05050; }
+  .domain-value {
+    font-size: 0.7rem;
+    color: #5a6478;
+    text-align: right;
+  }
+
+  /* Situation card */
+  .situation-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.6s ease;
+  }
+  .situation-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5a6478;
+    margin-bottom: 12px;
+  }
+  .situation-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #c8cdd5;
+  }
+
+  /* Choices */
+  .choices-section { margin-bottom: 24px; }
+  .choices-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5a6478;
+    margin-bottom: 14px;
+  }
+  .choice-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .choice-card:hover { border-color: rgba(77,159,240,0.3); background: rgba(77,159,240,0.04); }
+  .choice-card.selected { border-color: #4d9ff0; background: rgba(77,159,240,0.08); }
+  .choice-card.disabled { opacity: 0.5; pointer-events: none; }
+  .choice-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(77,159,240,0.12);
+    color: #4d9ff0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .choice-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #c8cdd5;
+  }
+
+  /* Prediction section */
+  .prediction-section {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease;
+  }
+  .prediction-section h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  .prediction-section p {
+    font-size: 0.85rem;
+    color: #5a6478;
+    margin-bottom: 16px;
+  }
+  .prediction-domains-label {
+    font-size: 0.75rem;
+    color: #8892a4;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .prediction-textarea {
+    width: 100%;
+    min-height: 70px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: #f0f2f5;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.9rem;
+    resize: vertical;
+    margin-top: 14px;
+  }
+  .prediction-textarea:focus { outline: none; border-color: #4d9ff0; }
+  .prediction-textarea::placeholder { color: #3a4252; }
+
+  /* Action button */
+  .action-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Lato', sans-serif;
+    margin-bottom: 24px;
+  }
+  .action-btn.primary {
+    background: linear-gradient(135deg, #4d9ff0, #3a8de0);
+    color: white;
+  }
+  .action-btn.primary:hover { box-shadow: 0 6px 20px rgba(77,159,240,0.3); transform: translateY(-1px); }
+  .action-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Cascade consequences */
+  .cascade-section { margin-bottom: 24px; }
+  .cascade-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5a6478;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cascade-step {
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.025);
+    border-left: 3px solid #5a6478;
+    animation: slideInLeft 0.5s ease forwards;
+    opacity: 0;
+  }
+  .cascade-step.positive { border-left-color: #3ecf71; }
+  .cascade-step.negative { border-left-color: #f05050; }
+  .cascade-step.neutral { border-left-color: #f0a500; }
+  .cascade-step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .cascade-domain {
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .cascade-delta {
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .cascade-delta.positive { color: #3ecf71; }
+  .cascade-delta.negative { color: #f05050; }
+  .cascade-delta.neutral { color: #f0a500; }
+  .cascade-narrative {
+    font-size: 0.9rem;
+    color: #8892a4;
+    line-height: 1.5;
+  }
+
+  /* What If button */
+  .whatif-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(77,159,240,0.3);
+    background: linear-gradient(135deg, rgba(77,159,240,0.08), rgba(77,159,240,0.02));
+    color: #4d9ff0;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+    transition: all 0.3s;
+    animation: whatIfGlow 3s ease infinite;
+    margin-bottom: 24px;
+  }
+  .whatif-btn:hover {
+    background: linear-gradient(135deg, rgba(77,159,240,0.15), rgba(77,159,240,0.05));
+    transform: translateY(-1px);
+  }
+  .whatif-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; transform: none; }
+
+  /* What If result */
+  .whatif-result {
+    background: rgba(77,159,240,0.04);
+    border: 1px solid rgba(77,159,240,0.15);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease;
+  }
+  .whatif-result h3 {
+    font-size: 1rem;
+    color: #4d9ff0;
+    margin-bottom: 14px;
+  }
+
+  /* Prediction evaluation */
+  .eval-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease;
+  }
+  .eval-card h3 { font-size: 1rem; margin-bottom: 8px; }
+  .eval-score {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+  .eval-feedback {
+    font-size: 0.9rem;
+    color: #8892a4;
+    line-height: 1.5;
+  }
+
+  /* Loading */
+  .loading-shimmer {
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .loading-shimmer p { color: #5a6478; font-size: 0.9rem; }
+  .loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(77,159,240,0.2);
+    border-top-color: #4d9ff0;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  /* Error */
+  .error-card {
+    background: rgba(240,80,80,0.06);
+    border: 1px solid rgba(240,80,80,0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .error-card p { color: #f05050; margin-bottom: 12px; font-size: 0.9rem; }
+  .retry-btn {
+    background: rgba(240,80,80,0.12);
+    color: #f05050;
+    border: 1px solid rgba(240,80,80,0.3);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+    transition: all 0.2s;
+  }
+  .retry-btn:hover { background: rgba(240,80,80,0.2); }
+
+  /* Summary / end screen */
+  .summary-screen {
+    animation: fadeIn 0.6s ease;
+    text-align: center;
+    padding: 40px 0;
+  }
+  .summary-screen h2 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  .summary-rating {
+    font-size: 1.4rem;
+    color: #f0a500;
+    margin-bottom: 24px;
+  }
+  .summary-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .summary-stat {
+    text-align: center;
+  }
+  .summary-stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+  }
+  .summary-stat-label {
+    font-size: 0.75rem;
+    color: #5a6478;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .summary-breakdown {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+  .summary-breakdown h3 { font-size: 1rem; margin-bottom: 16px; }
+
+  /* Phase indicator */
+  .phase-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .phase-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.3s;
+  }
+  .phase-dot.active { background: #4d9ff0; width: 24px; border-radius: 4px; }
+  .phase-dot.done { background: #3ecf71; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .domains-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+    .intro-title { font-size: 2.2rem; }
+    .stats-bar { gap: 16px; }
+    .summary-stats { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Domain definitions ──
+const ALL_DOMAINS = [
+  { id: 'team', name: 'Team', img: 'assets/cascade_team.png' },
+  { id: 'product', name: 'Product', img: 'assets/cascade_product.png' },
+  { id: 'market', name: 'Market', img: 'assets/cascade_market.png' },
+  { id: 'finance', name: 'Finance', img: 'assets/cascade_finance.png' },
+  { id: 'culture', name: 'Culture', img: 'assets/cascade_culture.png' },
+  { id: 'customers', name: 'Customers', img: 'assets/cascade_customers.png' },
+  { id: 'tech', name: 'Technology', img: 'assets/cascade_tech.png' },
+  { id: 'ops', name: 'Operations', img: 'assets/cascade_ops.png' },
+];
+
+const DOMAIN_FALLBACK_ICONS = {
+  team: '\u{1F465}', product: '\u{1F4E6}', market: '\u{1F4C8}', finance: '\u{1F4B0}',
+  culture: '\u{1F3AD}', customers: '\u{1F91D}', tech: '\u{1F4BB}', ops: '\u{2699}\u{FE0F}'
+};
+
+const RATINGS = [
+  { min: 0, label: 'Learning' },
+  { min: 40, label: 'Pattern Spotter' },
+  { min: 65, label: 'Cascade Reader' },
+  { min: 85, label: 'Systems Thinker' },
+];
+
+function getRating(score) {
+  for (let i = RATINGS.length - 1; i >= 0; i--) {
+    if (score >= RATINGS[i].min) return RATINGS[i].label;
+  }
+  return RATINGS[0].label;
+}
+
+function healthColor(val) {
+  if (val >= 70) return 'green';
+  if (val >= 40) return 'amber';
+  return 'red';
+}
+
+function clampHealth(val) {
+  return Math.max(0, Math.min(100, Math.round(val)));
+}
+
+// ── Gemini API helper ──
+async function callGemini(apiKey, systemPrompt, userPrompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [
+        { role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }
+      ],
+      generationConfig: {
+        temperature: 0.85,
+        maxOutputTokens: 2048,
+        responseMimeType: 'application/json',
+      }
+    })
+  });
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error(`API error ${res.status}: ${errBody}`);
+  }
+  const data = await res.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Empty response from AI');
+  return JSON.parse(text);
+}
+
+// ── AI Prompt builders ──
+function buildScenarioPrompt(roundIndex, previousContext) {
+  const domainList = ALL_DOMAINS.map(d => d.id).join(', ');
+  const prevCtx = previousContext ? `\nPrevious context to build on: ${previousContext}` : '';
+  return {
+    system: `You are a business simulation AI for the game "Cascade". You create complex, realistic business/organizational scenarios that test systems thinking. Always respond in valid JSON only. No markdown, no code fences.`,
+    user: `Generate scenario ${roundIndex + 1} for a Cascade game. Pick exactly 5 domains from this pool: [${domainList}]. Create a complex business/organizational situation involving those 5 domains.${prevCtx}
+
+Return JSON with this exact structure:
+{
+  "title": "short scenario title",
+  "description": "2-3 paragraph rich description of the situation. Make it feel real, consequential, and interconnected. Include specific details about what's happening in the organization.",
+  "activeDomains": ["domain_id_1", "domain_id_2", "domain_id_3", "domain_id_4", "domain_id_5"],
+  "initialHealth": { "domain_id": number_50_to_85 },
+  "choices": [
+    {
+      "id": "A",
+      "text": "description of choice A - a meaningful decision with genuine trade-offs (2-3 sentences)"
+    },
+    {
+      "id": "B",
+      "text": "description of choice B - a different approach with its own trade-offs (2-3 sentences)"
+    },
+    {
+      "id": "C",
+      "text": "description of choice C - a third distinct path with its own trade-offs (2-3 sentences)"
+    }
+  ]
+}
+
+Make choices genuinely different with real trade-offs. No choice should be obviously best. Each should help some domains and hurt others.`
+  };
+}
+
+function buildConsequencePrompt(scenario, choiceId, currentHealth, decisionNumber) {
+  const choice = scenario.choices.find(c => c.id === choiceId);
+  return {
+    system: `You are the consequence engine for "Cascade", a business simulation game. Generate realistic, cascading consequences that ripple through interconnected systems. Each consequence should logically flow from the previous ones. Always respond in valid JSON only. No markdown, no code fences.`,
+    user: `Current system state:
+${JSON.stringify(currentHealth, null, 2)}
+
+Scenario: ${scenario.title}
+${scenario.description}
+
+The player chose option ${choiceId}: ${choice.text}
+
+This is decision ${decisionNumber} of 2 for this scenario.
+
+Generate 4-5 cascading consequences in ripple order (most immediate first, most downstream last). Each consequence should affect one of the active domains: [${scenario.activeDomains.join(', ')}].
+
+Return JSON:
+{
+  "consequences": [
+    {
+      "domain": "domain_id",
+      "delta": number_between_negative_30_and_positive_30,
+      "type": "positive" or "negative" or "neutral",
+      "narrative": "1-2 sentence description of what happens and why"
+    }
+  ],
+  "summary": "A brief 1-sentence summary of the overall cascade effect",
+  "updatedContext": "Brief context that carries forward to shape the next decision"
+}`
+  };
+}
+
+function buildEvalPrompt(predictedDomains, predictedText, actualConsequences) {
+  return {
+    system: `You evaluate prediction accuracy for the game "Cascade". Be fair but honest. Always respond in valid JSON only. No markdown, no code fences.`,
+    user: `The player predicted these domains would be most affected: [${predictedDomains.join(', ')}]
+The player's written prediction: "${predictedText || 'No written prediction provided'}"
+
+Actual consequences:
+${JSON.stringify(actualConsequences, null, 2)}
+
+Evaluate the player's prediction accuracy. Consider:
+1. Did they identify the right domains? (most weight)
+2. Did their written prediction capture the direction/nature of the consequences?
+
+Return JSON:
+{
+  "score": number_0_to_100,
+  "feedback": "2-3 sentences of specific feedback on what they got right and wrong"
+}`
+  };
+}
+
+function buildWhatIfPrompt(scenario, alternateChoiceId, currentHealth) {
+  const choice = scenario.choices.find(c => c.id === alternateChoiceId);
+  return {
+    system: `You generate counterfactual scenarios for "Cascade". Show what WOULD have happened with a different choice. Always respond in valid JSON only. No markdown, no code fences.`,
+    user: `Current system state:
+${JSON.stringify(currentHealth, null, 2)}
+
+Scenario: ${scenario.title}
+${scenario.description}
+
+The player did NOT choose option ${alternateChoiceId}: ${choice.text}
+
+What would have happened if they had? Generate 3-4 alternative cascading consequences.
+
+Return JSON:
+{
+  "consequences": [
+    {
+      "domain": "domain_id",
+      "delta": number_between_negative_30_and_positive_30,
+      "type": "positive" or "negative" or "neutral",
+      "narrative": "1-2 sentence description"
+    }
+  ],
+  "insight": "A 1-2 sentence insight about how this path compares to what actually happened"
+}`
+  };
+}
+
+function buildSecondDecisionPrompt(scenario, updatedContext, currentHealth) {
+  return {
+    system: `You are a business simulation AI for "Cascade". Generate the second decision for an ongoing scenario. The consequences of the first decision have reshaped the landscape. Always respond in valid JSON only. No markdown, no code fences.`,
+    user: `Original scenario: ${scenario.title}
+${scenario.description}
+
+After the first decision, here's the current context: ${updatedContext}
+
+Current system health:
+${JSON.stringify(currentHealth, null, 2)}
+
+Active domains: [${scenario.activeDomains.join(', ')}]
+
+Generate a follow-up situation and 3 new choices that emerge from the consequences of the first decision.
+
+Return JSON:
+{
+  "followUpDescription": "1-2 paragraph description of the evolved situation",
+  "choices": [
+    {
+      "id": "A",
+      "text": "description of choice A (2-3 sentences)"
+    },
+    {
+      "id": "B",
+      "text": "description of choice B (2-3 sentences)"
+    },
+    {
+      "id": "C",
+      "text": "description of choice C (2-3 sentences)"
+    }
+  ]
+}`
+  };
+}
+
+// ── Components ──
+
+function DomainIcon({ domain }) {
+  const [imgErr, setImgErr] = useState(false);
+  if (imgErr) {
+    return <span className="domain-icon-fallback">{DOMAIN_FALLBACK_ICONS[domain.id] || '?'}</span>;
+  }
+  return <img className="domain-img" src={domain.img} alt={domain.name} onError={() => setImgErr(true)} />;
+}
+
+function DomainCard({ domain, health, selectable, selected, inactive, onClick }) {
+  const color = healthColor(health);
+  let cls = 'domain-card';
+  if (selectable) cls += ' selectable';
+  if (selected) cls += ' selected';
+  if (inactive) cls += ' inactive';
+  cls += ` health-${color}`;
+
+  return (
+    <div className={cls} onClick={selectable ? onClick : undefined}>
+      <div className="domain-top">
+        <DomainIcon domain={domain} />
+        <span className="domain-name">{domain.name}</span>
+      </div>
+      <div className="domain-health-bar">
+        <div className={`domain-health-fill ${color}`} style={{ width: `${health}%` }} />
+      </div>
+      <div className="domain-value" style={{ color: color === 'green' ? '#3ecf71' : color === 'amber' ? '#f0a500' : '#f05050' }}>
+        {health}
+      </div>
+    </div>
+  );
+}
+
+function LoadingState({ message }) {
+  return (
+    <div className="loading-shimmer">
+      <div className="loading-spinner" />
+      <p>{message || 'AI is thinking...'}</p>
+    </div>
+  );
+}
+
+function ErrorState({ message, onRetry }) {
+  return (
+    <div className="error-card">
+      <p>{message || 'Something went wrong.'}</p>
+      {onRetry && <button className="retry-btn" onClick={onRetry}>Try Again</button>}
+    </div>
+  );
+}
+
+function CascadeStep({ step, index }) {
+  const domain = ALL_DOMAINS.find(d => d.id === step.domain);
+  const deltaStr = step.delta > 0 ? `+${step.delta}` : `${step.delta}`;
+  return (
+    <div
+      className={`cascade-step ${step.type}`}
+      style={{ animationDelay: `${index * 0.3}s`, animationFillMode: 'forwards' }}
+    >
+      <div className="cascade-step-header">
+        <span className="cascade-domain">{domain?.name || step.domain}</span>
+        <span className={`cascade-delta ${step.type}`}>{deltaStr}</span>
+      </div>
+      <div className="cascade-narrative">{step.narrative}</div>
+    </div>
+  );
+}
+
+// ── Main App ──
+function CascadeGame() {
+  // State
+  const [screen, setScreen] = useState('intro'); // intro | playing | summary
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('cyborg_gemini_key') || '');
+  const [showKeyModal, setShowKeyModal] = useState(false);
+  const [tempKey, setTempKey] = useState('');
+
+  // Game state
+  const [scenarioIndex, setScenarioIndex] = useState(0); // 0 or 1
+  const [decisionIndex, setDecisionIndex] = useState(0); // 0 or 1 within scenario
+  const [totalDecisions, setTotalDecisions] = useState(0);
+  const [scenario, setScenario] = useState(null);
+  const [currentDescription, setCurrentDescription] = useState('');
+  const [currentChoices, setCurrentChoices] = useState([]);
+  const [domainHealth, setDomainHealth] = useState({});
+  const [activeDomains, setActiveDomains] = useState([]);
+  const [updatedContext, setUpdatedContext] = useState('');
+
+  // Decision phase state
+  const [phase, setPhase] = useState('loading'); // loading | predict | choose | consequences | whatif | eval | transition
+  const [selectedChoice, setSelectedChoice] = useState(null);
+  const [predictedDomains, setPredictedDomains] = useState([]);
+  const [predictionText, setPredictionText] = useState('');
+  const [consequences, setConsequences] = useState([]);
+  const [consequenceSummary, setConsequenceSummary] = useState('');
+  const [evaluation, setEvaluation] = useState(null);
+  const [whatIfUsed, setWhatIfUsed] = useState(false);
+  const [whatIfResult, setWhatIfResult] = useState(null);
+  const [whatIfAvailable, setWhatIfAvailable] = useState(true);
+  const [whatIfChoice, setWhatIfChoice] = useState(null);
+
+  // Scoring
+  const [totalPredictionScore, setTotalPredictionScore] = useState(0);
+  const [predictionCount, setPredictionCount] = useState(0);
+  const [whatIfInsights, setWhatIfInsights] = useState(0);
+  const [totalWhatIfs, setTotalWhatIfs] = useState(0);
+
+  // Loading/error
+  const [loading, setLoading] = useState(false);
+  const [loadingMsg, setLoadingMsg] = useState('');
+  const [error, setError] = useState(null);
+  const retryRef = useRef(null);
+
+  // Check for API key on start
+  function startGame() {
+    if (!apiKey) {
+      setTempKey('');
+      setShowKeyModal(true);
+    } else {
+      beginGame();
+    }
+  }
+
+  function saveKey() {
+    if (tempKey.trim()) {
+      localStorage.setItem('cyborg_gemini_key', tempKey.trim());
+      setApiKey(tempKey.trim());
+      setShowKeyModal(false);
+      if (screen === 'intro') {
+        setTimeout(() => beginGame(tempKey.trim()), 100);
+      }
+    }
+  }
+
+  function beginGame(key) {
+    const k = key || apiKey;
+    setScreen('playing');
+    setScenarioIndex(0);
+    setDecisionIndex(0);
+    setTotalDecisions(0);
+    setTotalPredictionScore(0);
+    setPredictionCount(0);
+    setWhatIfInsights(0);
+    setTotalWhatIfs(0);
+    loadScenario(0, k, '');
+  }
+
+  async function loadScenario(idx, key, prevContext) {
+    const k = key || apiKey;
+    setPhase('loading');
+    setLoading(true);
+    setLoadingMsg('Generating scenario...');
+    setError(null);
+    setConsequences([]);
+    setEvaluation(null);
+    setWhatIfResult(null);
+    setWhatIfUsed(false);
+    setWhatIfAvailable(true);
+
+    try {
+      const prompt = buildScenarioPrompt(idx, prevContext);
+      const result = await callGemini(k, prompt.system, prompt.user);
+
+      // Validate and set
+      const health = {};
+      result.activeDomains.forEach(d => {
+        health[d] = clampHealth(result.initialHealth[d] || 65);
+      });
+
+      setScenario(result);
+      setCurrentDescription(result.description);
+      setCurrentChoices(result.choices);
+      setDomainHealth(health);
+      setActiveDomains(result.activeDomains);
+      setSelectedChoice(null);
+      setPredictedDomains([]);
+      setPredictionText('');
+      setDecisionIndex(0);
+      setPhase('predict');
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      retryRef.current = () => loadScenario(idx, k, prevContext);
+    }
+  }
+
+  function togglePredictedDomain(domainId) {
+    setPredictedDomains(prev => {
+      if (prev.includes(domainId)) return prev.filter(d => d !== domainId);
+      if (prev.length >= 3) return prev;
+      return [...prev, domainId];
+    });
+  }
+
+  function proceedToChoose() {
+    setPhase('choose');
+  }
+
+  async function submitChoice() {
+    if (!selectedChoice) return;
+    setPhase('consequences');
+    setLoading(true);
+    setLoadingMsg('Simulating cascading consequences...');
+    setError(null);
+
+    try {
+      const prompt = buildConsequencePrompt(scenario, selectedChoice, domainHealth, decisionIndex + 1);
+      const result = await callGemini(apiKey, prompt.system, prompt.user);
+
+      // Apply consequences to health
+      const newHealth = { ...domainHealth };
+      result.consequences.forEach(c => {
+        if (newHealth[c.domain] !== undefined) {
+          newHealth[c.domain] = clampHealth(newHealth[c.domain] + c.delta);
+        }
+      });
+
+      setDomainHealth(newHealth);
+      setConsequences(result.consequences);
+      setConsequenceSummary(result.summary);
+      setUpdatedContext(result.updatedContext || '');
+      setLoading(false);
+
+      // Now evaluate prediction
+      evaluatePrediction(result.consequences);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      retryRef.current = () => submitChoice();
+    }
+  }
+
+  async function evaluatePrediction(conseqs) {
+    setLoadingMsg('Evaluating your prediction...');
+    try {
+      const prompt = buildEvalPrompt(predictedDomains, predictionText, conseqs);
+      const result = await callGemini(apiKey, prompt.system, prompt.user);
+      setEvaluation(result);
+      setTotalPredictionScore(prev => prev + (result.score || 0));
+      setPredictionCount(prev => prev + 1);
+    } catch (err) {
+      // Non-critical - can continue without eval
+      setEvaluation({ score: 0, feedback: 'Could not evaluate prediction.' });
+    }
+  }
+
+  async function useWhatIf() {
+    if (whatIfUsed) return;
+    // Determine which choices weren't picked
+    const otherChoices = currentChoices.filter(c => c.id !== selectedChoice);
+    // Use the first non-selected choice
+    const altChoice = otherChoices[0];
+    setWhatIfUsed(true);
+    setTotalWhatIfs(prev => prev + 1);
+    setLoading(true);
+    setLoadingMsg('Exploring the road not taken...');
+
+    try {
+      const prompt = buildWhatIfPrompt(scenario, altChoice.id, domainHealth);
+      const result = await callGemini(apiKey, prompt.system, prompt.user);
+      setWhatIfResult(result);
+      setWhatIfChoice(altChoice);
+      setWhatIfInsights(prev => prev + 1);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setWhatIfResult({ consequences: [], insight: 'Could not generate alternative scenario.' });
+    }
+  }
+
+  async function proceedToNext() {
+    const newDecisionIndex = decisionIndex + 1;
+    const newTotalDecisions = totalDecisions + 1;
+    setTotalDecisions(newTotalDecisions);
+
+    if (newTotalDecisions >= 4) {
+      // Game over
+      setScreen('summary');
+      return;
+    }
+
+    if (newDecisionIndex >= 2) {
+      // Next scenario
+      const newScenarioIndex = scenarioIndex + 1;
+      setScenarioIndex(newScenarioIndex);
+      setDecisionIndex(0);
+      loadScenario(newScenarioIndex, apiKey, updatedContext);
+      return;
+    }
+
+    // Second decision in same scenario
+    setDecisionIndex(newDecisionIndex);
+    setPhase('loading');
+    setLoading(true);
+    setLoadingMsg('Consequences are reshaping the landscape...');
+    setError(null);
+    setConsequences([]);
+    setEvaluation(null);
+    setWhatIfResult(null);
+    setWhatIfUsed(false);
+    setSelectedChoice(null);
+    setPredictedDomains([]);
+    setPredictionText('');
+
+    try {
+      const prompt = buildSecondDecisionPrompt(scenario, updatedContext, domainHealth);
+      const result = await callGemini(apiKey, prompt.system, prompt.user);
+
+      setCurrentDescription(result.followUpDescription);
+      setCurrentChoices(result.choices);
+      setPhase('predict');
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      retryRef.current = () => proceedToNext();
+    }
+  }
+
+  // ── Computed values ──
+  const avgHealth = activeDomains.length > 0
+    ? Math.round(activeDomains.reduce((sum, d) => sum + (domainHealth[d] || 0), 0) / activeDomains.length)
+    : 0;
+
+  const avgPrediction = predictionCount > 0 ? Math.round(totalPredictionScore / predictionCount) : 0;
+
+  const finalScore = predictionCount > 0
+    ? Math.round(avgPrediction * 0.5 + avgHealth * 0.3 + (whatIfInsights > 0 ? 20 : 0))
+    : 0;
+
+  // ── Render ──
+
+  // Settings gear (always visible)
+  const settingsGear = (
+    <button className="settings-gear" onClick={() => { setTempKey(apiKey); setShowKeyModal(true); }} title="API Settings">
+      {'\u2699'}
+    </button>
+  );
+
+  // Key modal
+  const keyModal = showKeyModal && (
+    <div className="modal-overlay" onClick={() => setShowKeyModal(false)}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
+        <h3>Gemini API Key</h3>
+        <input
+          type="password"
+          value={tempKey}
+          onChange={e => setTempKey(e.target.value)}
+          placeholder="Enter your Gemini API key"
+          onKeyDown={e => e.key === 'Enter' && saveKey()}
+          autoFocus
+        />
+        <div className="modal-btns">
+          <button className="modal-btn secondary" onClick={() => setShowKeyModal(false)}>Cancel</button>
+          <button className="modal-btn primary" onClick={saveKey}>Save</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── INTRO SCREEN ──
+  if (screen === 'intro') {
+    return (
+      <div className="game-container">
+        {settingsGear}
+        {keyModal}
+        <div className="intro-screen">
+          <img src="assets/header_cascade.png" alt="Cascade" className="intro-header-img" onError={e => e.target.style.display = 'none'} />
+          <h1 className="intro-title">Cascade</h1>
+          <p className="intro-tagline">Every decision ripples. See the consequences before they compound.</p>
+          <button className="intro-btn" onClick={startGame}>Begin</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── SUMMARY SCREEN ──
+  if (screen === 'summary') {
+    const rating = getRating(finalScore);
+    return (
+      <div className="game-container">
+        {settingsGear}
+        {keyModal}
+        <div className="summary-screen">
+          <h2>Game Complete</h2>
+          <div className="summary-rating">{rating}</div>
+
+          <div className="summary-stats">
+            <div className="summary-stat">
+              <div className="summary-stat-value" style={{ color: '#4d9ff0' }}>{finalScore}</div>
+              <div className="summary-stat-label">Final Score</div>
+            </div>
+            <div className="summary-stat">
+              <div className="summary-stat-value" style={{ color: '#3ecf71' }}>{avgHealth}</div>
+              <div className="summary-stat-label">Avg Health</div>
+            </div>
+            <div className="summary-stat">
+              <div className="summary-stat-value" style={{ color: '#f0a500' }}>{avgPrediction}%</div>
+              <div className="summary-stat-label">Prediction Accuracy</div>
+            </div>
+          </div>
+
+          <div className="summary-breakdown">
+            <h3>Score Breakdown</h3>
+            <p style={{ color: '#8892a4', fontSize: '0.9rem', lineHeight: 1.7 }}>
+              <strong style={{ color: '#c8cdd5' }}>Prediction Accuracy:</strong> {avgPrediction}% average across {predictionCount} predictions ({Math.round(avgPrediction * 0.5)} pts)<br/>
+              <strong style={{ color: '#c8cdd5' }}>System Health:</strong> {avgHealth} average ({Math.round(avgHealth * 0.3)} pts)<br/>
+              <strong style={{ color: '#c8cdd5' }}>What If? Insights:</strong> {whatIfInsights} of {totalWhatIfs > 0 ? totalWhatIfs : 'none'} used ({whatIfInsights > 0 ? 20 : 0} pts)
+            </p>
+          </div>
+
+          <div className="domains-grid" style={{ maxWidth: 600, margin: '0 auto 32px' }}>
+            {activeDomains.map(dId => {
+              const domain = ALL_DOMAINS.find(d => d.id === dId);
+              if (!domain) return null;
+              return <DomainCard key={dId} domain={domain} health={domainHealth[dId] || 0} />;
+            })}
+          </div>
+
+          <button className="intro-btn" onClick={() => { setScreen('intro'); }}>Play Again</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── PLAYING SCREEN ──
+  const overallPhaseIndex = scenarioIndex * 2 + decisionIndex;
+  const phaseLabels = ['S1-D1', 'S1-D2', 'S2-D1', 'S2-D2'];
+
+  return (
+    <div className="game-container">
+      {settingsGear}
+      {keyModal}
+
+      {/* Header */}
+      <div className="game-header">
+        <h1>Cascade</h1>
+        <p>Scenario {scenarioIndex + 1} of 2 &middot; Decision {decisionIndex + 1} of 2</p>
+      </div>
+
+      {/* Phase indicator */}
+      <div className="phase-indicator">
+        {[0,1,2,3].map(i => (
+          <div key={i} className={`phase-dot ${i === overallPhaseIndex ? 'active' : i < overallPhaseIndex ? 'done' : ''}`} />
+        ))}
+      </div>
+
+      {/* Stats bar */}
+      <div className="stats-bar">
+        <div className="stat">
+          <div className="stat-value blue">{avgHealth}</div>
+          <div className="stat-label">System Health</div>
+        </div>
+        <div className="stat">
+          <div className="stat-value gold">{avgPrediction}%</div>
+          <div className="stat-label">Prediction</div>
+        </div>
+        <div className="stat">
+          <div className="stat-value green">{totalDecisions}/4</div>
+          <div className="stat-label">Decisions</div>
+        </div>
+      </div>
+
+      {/* Domain cards */}
+      {activeDomains.length > 0 && (
+        <div className="domains-grid">
+          {activeDomains.map(dId => {
+            const domain = ALL_DOMAINS.find(d => d.id === dId);
+            if (!domain) return null;
+            const isPredictPhase = phase === 'predict';
+            return (
+              <DomainCard
+                key={dId}
+                domain={domain}
+                health={domainHealth[dId] || 0}
+                selectable={isPredictPhase}
+                selected={isPredictPhase && predictedDomains.includes(dId)}
+                onClick={() => isPredictPhase && togglePredictedDomain(dId)}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* Error state */}
+      {error && <ErrorState message={error} onRetry={retryRef.current} />}
+
+      {/* Loading */}
+      {loading && <LoadingState message={loadingMsg} />}
+
+      {/* PHASE: Predict */}
+      {!loading && !error && phase === 'predict' && (
+        <>
+          {/* Scenario description */}
+          <div className="situation-card">
+            <div className="situation-label">{scenario?.title || 'Scenario'}</div>
+            <div className="situation-text">{currentDescription}</div>
+          </div>
+
+          {/* Prediction section */}
+          <div className="prediction-section">
+            <h3>Make Your Prediction</h3>
+            <p>Before you see the choices, predict which domains will be most affected. Select up to 3.</p>
+            <div className="prediction-domains-label">
+              Selected: {predictedDomains.length}/3 {predictedDomains.length > 0 && `(${predictedDomains.map(d => ALL_DOMAINS.find(dd => dd.id === d)?.name).join(', ')})`}
+            </div>
+            <textarea
+              className="prediction-textarea"
+              placeholder="What do you think will happen? (optional but helps your score)"
+              value={predictionText}
+              onChange={e => setPredictionText(e.target.value)}
+            />
+          </div>
+
+          <button
+            className="action-btn primary"
+            disabled={predictedDomains.length === 0}
+            onClick={proceedToChoose}
+          >
+            See the Choices
+          </button>
+        </>
+      )}
+
+      {/* PHASE: Choose */}
+      {!loading && !error && phase === 'choose' && (
+        <>
+          <div className="situation-card">
+            <div className="situation-label">{scenario?.title || 'Scenario'}</div>
+            <div className="situation-text">{currentDescription}</div>
+          </div>
+
+          <div className="choices-section">
+            <div className="choices-label">Choose Your Path</div>
+            {currentChoices.map(choice => (
+              <div
+                key={choice.id}
+                className={`choice-card ${selectedChoice === choice.id ? 'selected' : ''}`}
+                onClick={() => setSelectedChoice(choice.id)}
+              >
+                <div className="choice-letter">{choice.id}</div>
+                <div className="choice-text">{choice.text}</div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            className="action-btn primary"
+            disabled={!selectedChoice}
+            onClick={submitChoice}
+          >
+            Commit to Decision
+          </button>
+        </>
+      )}
+
+      {/* PHASE: Consequences */}
+      {!loading && !error && phase === 'consequences' && (
+        <>
+          {/* Consequences */}
+          {consequences.length > 0 && (
+            <div className="cascade-section">
+              <div className="cascade-label">Cascading Consequences</div>
+              {consequences.map((step, i) => (
+                <CascadeStep key={i} step={step} index={i} />
+              ))}
+              {consequenceSummary && (
+                <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, fontSize: '0.9rem', color: '#8892a4', fontStyle: 'italic' }}>
+                  {consequenceSummary}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Prediction evaluation */}
+          {evaluation && (
+            <div className="eval-card">
+              <h3>Prediction Accuracy</h3>
+              <div className="eval-score" style={{ color: evaluation.score >= 70 ? '#3ecf71' : evaluation.score >= 40 ? '#f0a500' : '#f05050' }}>
+                {evaluation.score}%
+              </div>
+              <div className="eval-feedback">{evaluation.feedback}</div>
+            </div>
+          )}
+
+          {/* What If button */}
+          {!whatIfUsed && (
+            <button className="whatif-btn" onClick={useWhatIf}>
+              What If...? (explore an alternate path)
+            </button>
+          )}
+
+          {/* What If result */}
+          {whatIfResult && (
+            <div className="whatif-result">
+              <h3>What If you had chosen {whatIfChoice?.id}?</h3>
+              <p style={{ color: '#8892a4', fontSize: '0.9rem', marginBottom: 14 }}>{whatIfChoice?.text}</p>
+              {whatIfResult.consequences?.map((step, i) => (
+                <CascadeStep key={i} step={step} index={i} />
+              ))}
+              {whatIfResult.insight && (
+                <div style={{ marginTop: 14, padding: '12px 16px', background: 'rgba(77,159,240,0.06)', borderRadius: 8, fontSize: '0.9rem', color: '#4d9ff0', fontStyle: 'italic' }}>
+                  {whatIfResult.insight}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Continue button */}
+          {(!whatIfUsed || whatIfResult) && !loading && (
+            <button className="action-btn primary" onClick={proceedToNext}>
+              {totalDecisions >= 3 ? 'See Results' : 'Continue'}
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<CascadeGame />);
+</script>
+</body>
+</html>

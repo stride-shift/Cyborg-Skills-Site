@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import ReframeGame from './games/reframe/ReframeGame.jsx';
+import BabelGame from './games/babel/BabelGame.jsx';
 import { Layers, ArrowRight, Play, Gamepad2, Sparkles, X, Menu, BookOpen, Zap, Target, Lightbulb, TrendingUp, CircleDot, Gift, ChevronRight, Eye, Image, Users, Pause, Volume2, Sun, Moon } from 'lucide-react';
 
 /*
@@ -1362,6 +1364,7 @@ const NavBar = () => {
               { path: '/habits', label: 'Cyborg Habits' },
               { path: '/marketplace', label: 'Marketplace' },
               { path: '/think-tank', label: 'Think Tank' },
+              { path: '/insights', label: 'Insights' },
               { path: '/podcast', label: 'Podcast' },
               { path: '/about', label: 'Contact' }
             ].map(({ path, label }) => (
@@ -1389,6 +1392,7 @@ const NavBar = () => {
               { path: '/habits', label: 'Cyborg Habits' },
               { path: '/marketplace', label: 'Marketplace' },
               { path: '/think-tank', label: 'Think Tank' },
+              { path: '/insights', label: 'Insights' },
               { path: '/podcast', label: 'Podcast' },
               { path: '/about', label: 'Contact' }
             ].map(({ path, label }) => (
@@ -2463,6 +2467,312 @@ const ThinkTankPage = () => (
   </div>
 );
 
+const insightsPosts = [
+  {
+    id: 1,
+    type: 'Hot Take',
+    pillar: 'Thought Leadership',
+    title: 'Stop Trying to "Learn AI"',
+    subtitle: 'Awareness Asymmetry',
+    image: '/images/insights/01-awareness-asymmetry.png',
+    color: 'green',
+    body: `Stop trying to "learn AI."\n\nThe problem isn't that you lack AI skills.\n\nThe problem is awareness.\n\nWe don't have knowledge asymmetry anymore. Everyone can access the same information. Everyone can use the same tools.\n\nThe real competitive advantage now?\n\nKnowing what's actually possible.\n\nMost professionals have no idea what AI can do for them. They can't imagine it because they've never seen it done.\n\nThis is awareness asymmetry—and it's the new edge.\n\nThe people winning right now aren't the ones who took the most courses. They're the ones who simply know what's possible and act on it.\n\nSo stop studying AI.\n\nStart discovering what it can actually do for YOUR work.`,
+    cta: "What's something AI can do that most people in your industry don't realize yet?",
+    tags: ['AI', 'FutureOfWork', 'CompetitiveAdvantage', 'AwarenessAsymmetry'],
+  },
+  {
+    id: 2,
+    type: 'Framework',
+    pillar: 'Educational',
+    title: 'When AI Becomes Invisible',
+    subtitle: 'Transparent Equipment',
+    image: '/images/insights/02-transparent-equipment.png',
+    color: 'blue',
+    body: `When a skilled musician plays, they don't think about the instrument.\n\nThey think about the music. The intention. What they want to create.\n\nThe instrument becomes invisible.\n\nThis is what we call "transparent equipment"—and it's the goal for AI.\n\nRight now, most people are very aware of AI when they use it:\n\n"How do I prompt this?"\n"Is this the right tool?"\n"Why isn't it understanding me?"\n\nThat friction means AI is still "opaque equipment."\n\nThe transformation happens when AI becomes transparent:\n\nYou have a thought → It flows through AI → It manifests in the world\n\nNo conscious effort. No friction. Just intention → creation.\n\nThis doesn't happen through training. It happens through habit formation.\n\nWhen you use AI every day for the same types of tasks, it stops being a tool you think about.\n\nIt becomes an extension of how you think.`,
+    cta: 'How close are you to this state?',
+    tags: ['AI', 'Productivity', 'TransparentEquipment', 'Mastery'],
+  },
+  {
+    id: 3,
+    type: 'Story',
+    pillar: 'Social Proof',
+    title: 'The VP Who Stopped Faking It',
+    subtitle: 'Bridging Worlds',
+    image: '/images/insights/03-vp-story.png',
+    color: 'green',
+    body: `She had been faking it for 2 years.\n\nEvery technical meeting, she'd nod along. Pretending to understand the architecture discussions. Hoping no one would ask her opinion.\n\nAs the VP of Marketing, she was supposed to sign off on integration plans. But the jargon made her feel like she was reading a foreign language.\n\nThen she tried something different.\n\nBefore the next meeting, she took the technical document and asked AI:\n\n"Explain this to me like I'm a marketing professional who needs to understand the business implications, not the technical details."\n\n5 minutes later, she understood not just WHAT the team was proposing, but WHY it mattered for customer experience.\n\nShe spotted something in the plan—a gap in data flow that would affect personalization.\n\nIn the meeting, she asked a question that stopped the room.\n\nThe CTO paused. Then smiled.\n\n"That's... actually a really good catch."\n\nShe didn't become a technical expert that day.\n\nShe became something more valuable:\n\nA leader who could bridge worlds.`,
+    cta: "What expertise have you been faking that AI could help you actually understand?",
+    tags: ['Leadership', 'AI', 'Communication', 'ProfessionalDevelopment'],
+  },
+  {
+    id: 4,
+    type: 'Hot Take',
+    pillar: 'Thought Leadership',
+    title: 'Most AI Training Is a Waste of Time',
+    subtitle: 'Habits Beat Courses',
+    image: '/images/insights/04-training-fails.png',
+    color: 'blue',
+    body: `Most AI training is a waste of time.\n\nHere's why:\n\nTraditional AI courses teach you ABOUT AI.\n→ What is ChatGPT\n→ How LLMs work\n→ Prompt engineering tips\n\nBut knowing about AI ≠ using AI effectively.\n\nThink about it:\n\nHow many courses have you taken where you learned something... and then never applied it?\n\nThe forgetting curve is brutal. Within a week, you've lost 80% of what you "learned."\n\nWhat actually works?\n\nBehavior change, not knowledge transfer.\n\n→ Small daily challenges (4-5 minutes)\n→ Real work scenarios (not hypotheticals)\n→ Immediate application (not someday)\n→ Repeated practice until automatic\n\nYou don't need another course.\nYou need new habits.\n\nThe difference?\n\nCourses make you feel like you're making progress.\nHabits actually change how you work.`,
+    cta: 'Which would you rather have: a certificate, or a capability?',
+    tags: ['Learning', 'AI', 'BehaviorChange', 'Transformation'],
+  },
+  {
+    id: 5,
+    type: 'Framework',
+    pillar: 'Educational',
+    title: 'The 7 Habits of Highly Effective Cyborgs',
+    subtitle: 'Your Cognitive Toolkit',
+    image: '/images/insights/05-seven-habits.png',
+    color: 'green',
+    body: `The 7 Habits of Highly Effective Cyborgs:\n\n(Yes, that's a Covey reference. Deal with it.)\n\n1. EXPLAIN IT — Get AI to simplify complex concepts → "Explain this like I'm 5"\n\n2. PLAN IT — Create structured approaches → "Break this into steps"\n\n3. CRITIQUE IT — Challenge your assumptions → "Play devil's advocate"\n\n4. GUIDE ME — Navigate unfamiliar territory → "Walk me through this"\n\n5. IMAGINE IT — Explore possibilities → "What could this look like?"\n\n6. WHAT IF — Test assumptions → "What if we did the opposite?"\n\n7. IMPROVE IT — Refine and enhance → "Make this 10% better"\n\nHere's the thing:\n\nYou don't need all seven.\n\nEven if you only master three—Explain It, Plan It, Critique It—you're already a thousand times better than before.\n\nThese aren't AI skills. They're thinking habits that happen to use AI.`,
+    cta: 'Which three would transform your work the most?',
+    tags: ['AI', 'Productivity', 'Habits', 'CyborgSkills'],
+  },
+  {
+    id: 6,
+    type: 'Hot Take',
+    pillar: 'Thought Leadership',
+    title: 'AI Just Flipped the Script on Specialists',
+    subtitle: 'Generalists Win Now',
+    image: '/images/insights/06-generalists-win.png',
+    color: 'blue',
+    body: `For decades, the world rewarded specialists.\n\n"Pick a lane."\n"Go deep."\n"Become the expert."\n\nAI just flipped the script.\n\nHere's what's happening:\n\nEvery cyborg is a data analyst by default.\nEvery cyborg is an app developer by default.\n\nThese are table stakes now.\n\nThe scarcity has shifted.\n\nWhat's scarce isn't specialized knowledge—it's the imagination to combine capabilities in new ways.\n\nAI has given us an incredible gift:\n\nIt's taken those of us who have been imaginative and wanted to do a million different things but couldn't specialize in anything...\n\nAnd given us the power to actually reach more of our potential.\n\nThe generalist moment has arrived.\n\nYou're going to be coding, testing, writing, designing, thinking about product roadmaps—all in the same week.\n\nStop feeling guilty about being a generalist.\n\nStart leveraging it as your superpower.`,
+    cta: 'What did you used to think was "not your job" that AI now makes possible?',
+    tags: ['AI', 'Generalist', 'CareerAdvice', 'FutureOfWork'],
+  },
+  {
+    id: 7,
+    type: 'Framework',
+    pillar: 'Educational',
+    title: 'How Do You Assess Iron Man?',
+    subtitle: 'The Cyborg Model',
+    image: '/images/insights/07-iron-man-model.png',
+    color: 'green',
+    body: `How do you assess Iron Man's capabilities?\n\nYou don't evaluate:\n→ Just Tony Stark\n→ Just the suit\n→ Just JARVIS\n\nYou assess all parts together as a functional whole.\n\nThis is the Cyborg model.\n\nHuman + AI + Tools = Integrated capability system\n\nAnd here's where most people get it wrong:\n\nThey evaluate AI tools in isolation.\n"Is ChatGPT good?"\n"Is Claude better?"\n\nWrong question.\n\nThe right question:\n\nWhat can YOU + THIS AI + YOUR WORKFLOW accomplish together?\n\nThe same AI that's mediocre for one person is transformational for another.\n\nThe difference isn't the AI.\n\nIt's the integration.\n\nThree markets are emerging:\n1. Humans working alone\n2. AI agents working alone\n3. Cyborgs (human + AI enhanced)\n\nEach needs different solutions.\nEach has different capabilities.\nEach plays by different rules.`,
+    cta: 'Which market are you building for? More importantly—which one are you IN?',
+    tags: ['AI', 'HumanAI', 'Integration', 'Strategy'],
+  },
+  {
+    id: 8,
+    type: 'Value/CTA',
+    pillar: 'Educational',
+    title: "If You're Not Asking AI to Destroy Your Work...",
+    subtitle: "Devil's Advocate",
+    image: '/images/insights/08-devils-advocate.png',
+    color: 'blue',
+    body: `If you're not asking AI to destroy your work, you're not getting its full value.\n\nHere's a habit that will 10x your output quality:\n\nBefore you ship anything important, ask AI:\n\n"Act as a harsh but constructive critic. Find every weakness in this. Identify what I'm missing. Tell me what a skeptic would say. Be ruthless."\n\nWhy this works:\n\nAI has no emotional investment in protecting your feelings.\n\nIt won't soften the truth because you worked hard on something.\n\nIt won't avoid the uncomfortable observation because it's awkward.\n\nIt just... tells you.\n\nThe "Critique It" habit is one of the 7 core cyborg habits.\n\nAnd it might be the most uncomfortable one.\n\nBecause hearing "this has problems" never feels good—even from an AI.\n\nBut that discomfort?\n\nThat's the feeling of improvement.\n\nPro tip: Don't stop at the first critique. Ask "What else?" three more times.\n\nThe real insights come after the obvious problems.`,
+    cta: "What's something you're about to ship that you should run through the critique machine first?",
+    tags: ['AI', 'Feedback', 'Quality', 'CriticalThinking'],
+  },
+  {
+    id: 9,
+    type: 'Hot Take',
+    pillar: 'Thought Leadership',
+    title: 'We Keep Being the Bottleneck',
+    subtitle: 'The Bottleneck Paradox',
+    image: '/images/insights/09-bottleneck.png',
+    color: 'green',
+    body: `Here's an uncomfortable truth about AI productivity:\n\nWe keep finding ourselves being the bottleneck.\n\nAI can now:\n→ Process an entire literature in hours\n→ Generate 50 variations of anything\n→ Analyze datasets while you sleep\n→ Create content faster than you can review it\n\nThe constraint isn't AI capability anymore.\n\nIt's human processing speed.\n\nWhen AI can generate more good ideas in an hour than you can evaluate in a week, something has to change.\n\nThe old model: Human creates → AI assists\nThe new model: AI generates → Human curates\n\nBut here's the problem:\n\nHow do you maintain meaningful control when you can't possibly review everything?\n\nHow do you ensure quality when the volume exceeds your bandwidth?\n\nThis is the bottleneck paradox of AI productivity.\n\nAnd honestly? I don't think we've figured it out yet.\n\nWhat I do know:\n\nThe answer isn't "work faster."\nThe answer is "think differently about your role."`,
+    cta: "What's your strategy for staying relevant when AI output exceeds human review capacity?",
+    tags: ['AI', 'Productivity', 'FutureOfWork', 'Bottleneck'],
+  },
+  {
+    id: 10,
+    type: 'Hot Take',
+    pillar: 'Thought Leadership',
+    title: 'Taste Is the New Competitive Advantage',
+    subtitle: 'Curation Over Generation',
+    image: '/images/insights/10-taste.png',
+    color: 'blue',
+    body: `AI's biggest risk isn't replacing humans.\n\nIt's making everything look the same.\n\nHere's what I'm noticing:\n\nWhen everyone has access to the same powerful AI tools...\n\nThe same prompts get shared...\n\nThe same outputs get generated...\n\nAnd everything starts to feel generic.\n\nWhat was mindblowing six months ago now looks like everything else.\n\nThe differentiator isn't access to AI.\n\nIt's taste.\n\nIt's intention.\n\nIt's the human judgment that says "this isn't quite right" when the AI thinks it nailed it.\n\nUnless you take enough control of AI, it all starts to look the same.\n\nSo here's my question:\n\nAre you developing taste?\n\nOr are you just accepting what AI gives you?\n\nBecause in a world of infinite AI generation, curation becomes the scarce skill.\n\nThe people who win won't be the ones who generate the most.\n\nThey'll be the ones who can recognize what's actually good buried in the mountain of mediocre.`,
+    cta: 'How are you developing your taste muscle?',
+    tags: ['AI', 'Taste', 'Curation', 'Creativity', 'Differentiation'],
+  },
+];
+
+const InsightCard = ({ post, featured = false }) => {
+  const [expanded, setExpanded] = useState(false);
+  const hasImage = post.image;
+
+  if (featured) {
+    return (
+      <AnimatedCard className={`card-${post.color}`} delay={0} style={{ padding: 0, overflow: 'hidden', marginBottom: 'var(--space-lg)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', minHeight: '340px' }}>
+          <div style={{ background: `url(${post.image}) center/cover no-repeat`, minHeight: '340px', borderRadius: 'var(--radius-xl) 0 0 var(--radius-xl)' }}>
+            {!hasImage && <ImagePlaceholder height={340} label={post.subtitle} style={{ borderRadius: 'var(--radius-xl) 0 0 var(--radius-xl)', border: 'none', height: '100%' }} />}
+          </div>
+          <div style={{ padding: 'var(--space-2xl)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: 'var(--space-sm)', flexWrap: 'wrap' }}>
+              <span className={`badge ${post.color}`}>Featured</span>
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 700 }}>{post.type}</span>
+            </div>
+            <h3 style={{ fontSize: 'clamp(1.2rem, 2.5vw, 1.6rem)', fontFamily: 'Playfair Display, serif', fontWeight: 700, marginBottom: 'var(--space-xs)', lineHeight: 1.25 }}>
+              {post.title}
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', fontStyle: 'italic', marginBottom: 'var(--space-md)' }}>{post.subtitle}</p>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', fontSize: '0.9rem', marginBottom: 'var(--space-md)', whiteSpace: 'pre-line' }}>
+              {expanded ? post.body : post.body.slice(0, 200) + '...'}
+            </p>
+            {post.cta && (
+              <p style={{ color: `var(--${post.color}-accent)`, fontWeight: 600, fontSize: '0.9rem', marginBottom: 'var(--space-md)', fontStyle: 'italic' }}>
+                {post.cta}
+              </p>
+            )}
+            <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginBottom: 'var(--space-md)' }}>
+              {post.tags.map(tag => (
+                <span key={tag} style={{ fontSize: '0.7rem', color: 'var(--text-muted)', background: 'var(--bg-card)', padding: '2px 8px', borderRadius: '4px' }}>#{tag}</span>
+              ))}
+            </div>
+            <button onClick={() => setExpanded(!expanded)} className={`btn ${post.color === 'green' ? 'primary' : 'tech'}`} style={{ alignSelf: 'flex-start' }}>
+              {expanded ? 'Collapse' : 'Read Full Post'} <ArrowRight size={16} className="arrow-icon" />
+            </button>
+          </div>
+        </div>
+      </AnimatedCard>
+    );
+  }
+
+  const previewText = post.body.replace(/\n+/g, ' ').replace(/\s+/g, ' ').slice(0, 120) + '...';
+
+  return (
+    <AnimatedCard className={`card-${post.color}`} delay={0.05 * post.id} style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ background: `url(${post.image}) center/cover no-repeat`, height: '200px', borderRadius: 'var(--radius-xl) var(--radius-xl) 0 0', position: 'relative', flexShrink: 0 }}>
+        {!hasImage && <ImagePlaceholder height={200} label={post.subtitle} style={{ borderRadius: 'var(--radius-xl) var(--radius-xl) 0 0', border: 'none' }} />}
+        <span className={`badge ${post.color}`} style={{ position: 'absolute', top: 'var(--space-md)', left: 'var(--space-md)' }}>{post.type}</span>
+      </div>
+      <div style={{ padding: 'var(--space-lg)', display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <h3 style={{ fontSize: '1.1rem', fontFamily: 'Playfair Display, serif', fontWeight: 600, marginBottom: '4px', lineHeight: 1.3 }}>{post.title}</h3>
+        <p style={{ color: `var(--${post.color}-accent)`, fontSize: '0.8rem', fontWeight: 600, marginBottom: 'var(--space-sm)' }}>{post.subtitle}</p>
+        {!expanded ? (
+          <p style={{ color: 'var(--text-secondary)', lineHeight: '1.65', fontSize: '0.85rem', marginBottom: 'var(--space-md)', flex: 1 }}>
+            {previewText}
+          </p>
+        ) : (
+          <>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.65', fontSize: '0.85rem', marginBottom: 'var(--space-md)', whiteSpace: 'pre-line' }}>
+              {post.body}
+            </p>
+            {post.cta && (
+              <p style={{ color: `var(--${post.color}-accent)`, fontWeight: 600, fontSize: '0.85rem', marginBottom: 'var(--space-sm)', fontStyle: 'italic' }}>
+                {post.cta}
+              </p>
+            )}
+            <div style={{ display: 'flex', gap: 'var(--space-xs)', flexWrap: 'wrap', marginBottom: 'var(--space-md)' }}>
+              {post.tags.map(tag => (
+                <span key={tag} style={{ fontSize: '0.65rem', color: 'var(--text-muted)', background: 'var(--bg-card)', padding: '2px 6px', borderRadius: '4px' }}>#{tag}</span>
+              ))}
+            </div>
+          </>
+        )}
+        <button onClick={() => setExpanded(!expanded)} className={`btn ${post.color === 'green' ? 'primary' : 'tech'}`} style={{ width: '100%', marginTop: 'auto' }}>
+          {expanded ? 'Collapse' : 'Read Post'}
+        </button>
+      </div>
+    </AnimatedCard>
+  );
+};
+
+const InsightsPage = () => {
+  const featured = insightsPosts[0];
+  const rest = insightsPosts.slice(1);
+
+  return (
+    <div>
+      {/* HERO */}
+      <section className="hero-section" style={{ paddingTop: '100px', paddingBottom: 'var(--space-xl)', position: 'relative' }}>
+        <div className="hero-orb green"></div>
+        <div className="hero-orb blue"></div>
+        <div className="hero-lines">
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none">
+            <line x1="100" y1="350" x2="1100" y2="50" stroke="var(--border-subtle)" strokeWidth="0.5" />
+            <line x1="0" y1="200" x2="1200" y2="200" stroke="var(--border-subtle)" strokeWidth="0.3" />
+          </svg>
+        </div>
+        <div className="container-wide" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-2xl)', alignItems: 'end' }}>
+            <div>
+              <span className="badge green" style={{ marginBottom: 'var(--space-sm)', display: 'inline-block', animation: 'fadeInUp 0.8s ease backwards' }}>INSIGHTS</span>
+              <h1 className="page-title" style={{ animation: 'fadeInUp 0.8s ease 0.1s backwards' }}>Cyborg Thinking,<br />Out Loud.</h1>
+              <p className="page-subtitle" style={{ marginTop: 'var(--space-md)', animation: 'fadeInUp 0.8s ease 0.2s backwards' }}>
+                Hot takes, frameworks, and stories from the frontier of human-AI integration. Originally shared on LinkedIn—collected here for the community.
+              </p>
+            </div>
+            <AnimatedCard className="card-blue" delay={0.2} style={{ padding: 'var(--space-lg)' }}>
+              <h3 style={{ fontSize: '1rem', fontFamily: 'Playfair Display, serif', fontWeight: 600, marginBottom: 'var(--space-sm)' }}>Follow the Conversation</h3>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-md)', fontSize: '0.85rem', lineHeight: 1.6 }}>These posts spark discussion. Join us on LinkedIn for the real-time dialogue.</p>
+              <a href="#" className="btn tech" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                Connect on LinkedIn <ArrowRight size={14} className="arrow-icon" />
+              </a>
+            </AnimatedCard>
+          </div>
+        </div>
+        <style>{`
+          @media (max-width: 900px) {
+            .hero-section .container-wide > div[style*="1fr 1fr"] { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+      </section>
+
+      <div className="accent-stripe" />
+
+      {/* FEATURED POST */}
+      <section className="section-alt-dark section-mesh side-glow-green" style={{ padding: 'var(--space-3xl) 0', position: 'relative' }}>
+        <div className="section-number">01</div>
+        <div className="container-wide" style={{ position: 'relative', zIndex: 1 }}>
+          <h2 className="section-heading" style={{ marginBottom: 'var(--space-xl)' }}>Featured Insight</h2>
+          <InsightCard post={featured} featured />
+          <style>{`
+            @media (max-width: 900px) {
+              .section-alt-dark .card-panel > div[style*="1.2fr"] { grid-template-columns: 1fr !important; }
+              .section-alt-dark .card-panel > div[style*="1.2fr"] > div:first-child { min-height: 220px !important; border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important; }
+            }
+          `}</style>
+        </div>
+      </section>
+
+      {/* ALL POSTS GRID */}
+      <section className="section-layer side-glow-blue" style={{ padding: 'var(--space-3xl) 0', position: 'relative', overflow: 'hidden' }}>
+        <div className="floating-accent sm" style={{ top: '10%', right: '5%', borderColor: 'var(--green-dim)' }} />
+        <div className="section-number">02</div>
+        <div className="container-wide" style={{ position: 'relative', zIndex: 1 }}>
+          <h2 className="section-heading" style={{ marginBottom: 'var(--space-xl)' }}>All Insights</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-lg)' }}>
+            {rest.map(post => (
+              <InsightCard key={post.id} post={post} />
+            ))}
+          </div>
+          <style>{`
+            @media (max-width: 1100px) {
+              .section-layer .container-wide > div > div[style*="repeat(3"] { grid-template-columns: repeat(2, 1fr) !important; }
+            }
+            @media (max-width: 700px) {
+              .section-layer .container-wide > div > div[style*="repeat(3"],
+              .section-layer .container-wide > div[style*="repeat(3"] { grid-template-columns: 1fr !important; }
+            }
+          `}</style>
+        </div>
+      </section>
+
+      {/* CTA SECTION */}
+      <section className="section-alt-dark" style={{ padding: 'var(--space-3xl) 0', textAlign: 'center' }}>
+        <div className="container" style={{ maxWidth: '700px' }}>
+          <AnimatedCard className="card-green" style={{ padding: 'var(--space-2xl)' }}>
+            <Sparkles size={32} color="var(--green-accent)" style={{ marginBottom: 'var(--space-md)' }} />
+            <h3 style={{ fontSize: '1.4rem', fontFamily: 'Playfair Display, serif', fontWeight: 700, marginBottom: 'var(--space-sm)' }}>Want More Cyborg Thinking?</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-lg)', lineHeight: 1.7 }}>
+              These insights are part of an ongoing exploration. Subscribe for weekly dispatches from the frontier of human-AI cognition.
+            </p>
+            <div style={{ display: 'flex', gap: 'var(--space-sm)', justifyContent: 'center', maxWidth: '400px', margin: '0 auto' }}>
+              <input type="email" placeholder="your@email.com" className="form-input" style={{ flex: 1, padding: '0.65rem 1rem' }} />
+              <button className="btn primary" style={{ padding: '0.65rem 1rem' }}>Subscribe</button>
+            </div>
+          </AnimatedCard>
+        </div>
+      </section>
+    </div>
+  );
+};
+
 const PodcastPage = () => (
   <div>
     {/* HERO - compact with featured episode */}
@@ -2496,7 +2806,18 @@ const PodcastPage = () => (
             </div>
           </div>
           <div style={{ animation: 'fadeInRight 1s ease 0.3s backwards' }}>
-            <VideoPlaceholder label="Featured Episode" aspectRatio="16/9" />
+            <AnimatedCard className="card-green" style={{ padding: 'var(--space-lg)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: 'var(--space-md)' }}>
+                <div className="icon-box green" style={{ minWidth: '40px', height: '40px' }}>
+                  <Volume2 size={18} color="white" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '0.95rem', fontFamily: 'Playfair Display, serif', fontWeight: 600, lineHeight: 1.3 }}>Now Playing</h3>
+                  <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Cyborg Skills Podcast</p>
+                </div>
+              </div>
+              <audio controls preload="metadata" style={{ width: '100%', borderRadius: 'var(--radius-sm)', height: '48px' }} src="/audio/cyborg_skills_podcast.wav" />
+            </AnimatedCard>
           </div>
         </div>
       </div>
@@ -2782,8 +3103,11 @@ function App() {
         <Route path="/habits" element={<HabitsPage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/think-tank" element={<ThinkTankPage />} />
+        <Route path="/insights" element={<InsightsPage />} />
         <Route path="/podcast" element={<PodcastPage />} />
         <Route path="/about" element={<ContactPage />} />
+        <Route path="/games/reframe" element={<ReframeGame />} />
+        <Route path="/games/babel" element={<BabelGame />} />
       </Routes>
 
       <footer style={{ background: 'var(--bg-surface)', position: 'relative', overflow: 'hidden' }}>
@@ -2808,8 +3132,8 @@ function App() {
             <div>
               <h4 style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 700, marginBottom: 'var(--space-md)', color: 'var(--text-muted)' }}>Explore</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {['/habits', '/marketplace', '/think-tank', '/podcast'].map((path, i) => (
-                  <Link key={i} to={path} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.3s' }}>{['Cyborg Habits', 'Marketplace', 'Think Tank', 'Podcast'][i]}</Link>
+                {['/habits', '/marketplace', '/think-tank', '/insights', '/podcast'].map((path, i) => (
+                  <Link key={i} to={path} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.3s' }}>{['Cyborg Habits', 'Marketplace', 'Think Tank', 'Insights', 'Podcast'][i]}</Link>
                 ))}
               </div>
             </div>
