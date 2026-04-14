@@ -3112,6 +3112,17 @@ const VIDEOS = [
     src: `${VIDEO_STORAGE_BASE}/critique.mp4`,
     ready: true,
   },
+  {
+    id: 'suggest',
+    episode: 'Episode 03',
+    title: 'Most of your day is on autopilot.',
+    subtitle: 'The suggest habit — widening the pool you choose from.',
+    description: 'Most decisions in your life have always been made from a tiny pool of options — not because that\'s all there was, but because that\'s all you had time to gather. The pool was your bottleneck. Episode three: a small habit for choosing from a richer set.',
+    duration: '3:49',
+    runtime: 229,
+    src: `${VIDEO_STORAGE_BASE}/suggest.mp4`,
+    ready: true,
+  },
 ];
 
 const VideoCard = ({ video }) => {
