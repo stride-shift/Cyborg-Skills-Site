@@ -1366,6 +1366,7 @@ const NavBar = () => {
               { path: '/think-tank', label: 'Think Tank' },
               { path: '/insights', label: 'Insights' },
               { path: '/podcast', label: 'Podcast' },
+              { path: '/videos', label: 'Videos' },
               { path: '/about', label: 'Contact' }
             ].map(({ path, label }) => (
               <Link key={path} to={path} className={`nav-link ${isActive(path)}`}>{label}</Link>
@@ -1394,6 +1395,7 @@ const NavBar = () => {
               { path: '/think-tank', label: 'Think Tank' },
               { path: '/insights', label: 'Insights' },
               { path: '/podcast', label: 'Podcast' },
+              { path: '/videos', label: 'Videos' },
               { path: '/about', label: 'Contact' }
             ].map(({ path, label }) => (
               <Link key={path} to={path} onClick={() => setMenuOpen(false)} className={`nav-link ${isActive(path)}`} style={{ display: 'block', padding: 'var(--space-md) 0', borderBottom: '1px solid var(--border-subtle)' }}>
@@ -3083,6 +3085,97 @@ const ContactPage = () => (
   </div>
 );
 
+/* === VIDEOS PAGE === */
+
+const VIDEO_STORAGE_BASE = 'https://yfbnrcqqtztaazbalusm.supabase.co/storage/v1/object/public/videos';
+
+const VIDEOS = [
+  {
+    id: 'explanation',
+    episode: 'Episode 01',
+    title: 'You can just ask.',
+    subtitle: 'The explanation habit — and what it quietly changes.',
+    description: 'For most of history, if you didn\'t understand something, you had three options: find someone who could explain it, find a book written for people like you, or give up. A thought experiment about what happens when that rationing ends — not for the already-fluent, but for anyone with any device.',
+    duration: '4:46',
+    runtime: 286,
+    src: `${VIDEO_STORAGE_BASE}/explanation.mp4`,
+    ready: true,
+  },
+  {
+    id: 'critique',
+    episode: 'Episode 02',
+    title: 'Poke a hole first.',
+    subtitle: 'The critique habit — an always-on devil\'s advocate.',
+    description: 'There\'s real vulnerability in asking someone to poke holes in your work. Even when you do ask, they might soften, or they\'ve got their own biases. But an AI won\'t soften unless you ask it to. Episode two of the habit series.',
+    duration: '4:17',
+    runtime: 258,
+    src: `${VIDEO_STORAGE_BASE}/critique.mp4`,
+    ready: false,
+  },
+];
+
+const VideoCard = ({ video }) => {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef(null);
+
+  return (
+    <AnimatedCard className="card-green" style={{ padding: 0, overflow: 'hidden', marginBottom: 'var(--space-xl)' }}>
+      <div style={{ position: 'relative', background: '#000', aspectRatio: '16/9' }}>
+        {video.ready ? (
+          <video
+            ref={videoRef}
+            controls
+            preload="metadata"
+            playsInline
+            style={{ width: '100%', height: '100%', display: 'block' }}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
+            src={video.src}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 'var(--space-sm)', color: 'var(--text-muted)', background: 'linear-gradient(135deg, var(--bg-elevated), var(--bg-surface))' }}>
+            <div style={{ fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--blue-accent)', fontWeight: 700 }}>Coming soon</div>
+            <div style={{ fontSize: '0.9rem' }}>{video.duration}</div>
+          </div>
+        )}
+      </div>
+      <div style={{ padding: 'var(--space-lg) var(--space-xl)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: 'var(--space-xs)' }}>
+          <span className="badge green" style={{ fontSize: '0.65rem' }}>{video.episode}</span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>{video.duration}</span>
+        </div>
+        <h2 style={{ fontSize: '1.8rem', fontFamily: 'Playfair Display, serif', fontWeight: 700, lineHeight: 1.2, margin: 'var(--space-xs) 0 var(--space-sm)', color: 'var(--text-white)' }}>{video.title}</h2>
+        <p style={{ fontSize: '1rem', color: 'var(--text-soft)', marginBottom: 'var(--space-md)', fontStyle: 'italic' }}>{video.subtitle}</p>
+        <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: 'var(--text-muted)' }}>{video.description}</p>
+      </div>
+    </AnimatedCard>
+  );
+};
+
+const VideosPage = () => (
+  <div>
+    <section className="hero-section" style={{ paddingTop: '100px', paddingBottom: 'var(--space-xl)', position: 'relative' }}>
+      <div className="hero-orb green"></div>
+      <div className="hero-orb blue"></div>
+      <div className="container-wide" style={{ position: 'relative', zIndex: 1 }}>
+        <span className="badge blue" style={{ marginBottom: 'var(--space-sm)', display: 'inline-block', animation: 'fadeInUp 0.8s ease backwards' }}>THOUGHT EXPERIMENTS</span>
+        <h1 className="page-title" style={{ animation: 'fadeInUp 0.8s ease 0.1s backwards' }}>Videos.</h1>
+        <p className="page-subtitle" style={{ marginTop: 'var(--space-md)', maxWidth: '700px', animation: 'fadeInUp 0.8s ease 0.2s backwards' }}>
+          Short explainers, a few minutes each. Each one follows a single small habit through what it does for a person, a team, a society — when it becomes ordinary.
+        </p>
+      </div>
+    </section>
+
+    <div className="accent-stripe" />
+
+    <section className="section-alt-dark section-mesh" style={{ padding: 'var(--space-3xl) 0', position: 'relative' }}>
+      <div className="container-narrow" style={{ maxWidth: '820px' }}>
+        {VIDEOS.map(v => <VideoCard key={v.id} video={v} />)}
+      </div>
+    </section>
+  </div>
+);
+
 /* === APP === */
 
 function App() {
@@ -3105,6 +3198,7 @@ function App() {
         <Route path="/think-tank" element={<ThinkTankPage />} />
         <Route path="/insights" element={<InsightsPage />} />
         <Route path="/podcast" element={<PodcastPage />} />
+        <Route path="/videos" element={<VideosPage />} />
         <Route path="/about" element={<ContactPage />} />
         <Route path="/games/reframe" element={<ReframeGame />} />
         <Route path="/games/babel" element={<BabelGame />} />
