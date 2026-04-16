@@ -3145,6 +3145,17 @@ const VIDEOS = [
     src: `${VIDEO_STORAGE_BASE}/imagine.mp4`,
     ready: true,
   },
+  {
+    id: 'guide',
+    episode: 'Episode 06',
+    title: 'The patient teacher used to be rationed.',
+    subtitle: 'The guide habit — a teacher who doesn\'t tire of you.',
+    description: 'Think back to a specific moment you tried to learn something, and stopped. For most of history, whether you learned a thing came down to three rationings: finding a person who knew it, finding one patient enough to stay with you, and being able to afford the hours. Most of us couldn\'t clear all three. Episode six: a small habit for the thing you gave up on once.',
+    duration: '4:54',
+    runtime: 294,
+    src: `${VIDEO_STORAGE_BASE}/guide.mp4`,
+    ready: true,
+  },
 ];
 
 const VideoCard = ({ video }) => {
