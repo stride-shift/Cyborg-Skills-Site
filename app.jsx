@@ -3156,6 +3156,17 @@ const VIDEOS = [
     src: `${VIDEO_STORAGE_BASE}/guide.mp4`,
     ready: true,
   },
+  {
+    id: 'improve',
+    episode: 'Episode 07',
+    title: 'First versions used to be finals.',
+    subtitle: 'The improve habit — a second reader for the things you make.',
+    description: 'Rafael is sixty-two. Forty years a mechanic, now retired — and building a community repair workshop in his neighbourhood. The plan looks fine on paper. He knows it won\'t survive a Tuesday. Five versions later, it does. Episode seven: a small habit for the next version of anything you care about.',
+    duration: '6:07',
+    runtime: 367,
+    src: `${VIDEO_STORAGE_BASE}/improve.mp4`,
+    ready: true,
+  },
 ];
 
 const VideoCard = ({ video }) => {
