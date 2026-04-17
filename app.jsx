@@ -3178,6 +3178,17 @@ const VIDEOS = [
     src: `${VIDEO_STORAGE_BASE}/improve_short.mp4`,
     ready: true,
   },
+  {
+    id: 'together',
+    episode: 'Episode 08',
+    title: 'You already have the team.',
+    subtitle: 'The capstone — what happens when all seven habits become ordinary.',
+    description: 'One person. One ordinary Tuesday. An explainer, a critic, an options-generator, a planner, a conceiver, a patient teacher, and someone who makes what she makes better. A generation ago, that would have been a team of seven people. Today it\'s one person and one device. The final episode: what happens when the ceiling moves — for everyone.',
+    duration: '4:29',
+    runtime: 269,
+    src: `${VIDEO_STORAGE_BASE}/together.mp4`,
+    ready: true,
+  },
 ];
 
 const VideoCard = ({ video }) => {
