@@ -3167,6 +3167,17 @@ const VIDEOS = [
     src: `${VIDEO_STORAGE_BASE}/improve.mp4`,
     ready: true,
   },
+  {
+    id: 'improve_short',
+    episode: 'Episode 07 (short)',
+    title: 'First versions used to be finals.',
+    subtitle: 'The improve habit — compressed cut (4:35).',
+    description: 'Same story, same protagonist, same systemic argument — tighter. Opening compressed, iterations from 5 to 3, range from 4 vignettes to 2, discernment folded in. For when you want the core without the full arc.',
+    duration: '4:35',
+    runtime: 275,
+    src: `${VIDEO_STORAGE_BASE}/improve_short.mp4`,
+    ready: true,
+  },
 ];
 
 const VideoCard = ({ video }) => {
